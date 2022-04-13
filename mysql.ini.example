@@ -1,0 +1,9 @@
+ip=
+port=
+username=
+password=
+dbname=
+initSize=
+maxSize=
+maxIdleTime=
+connectionTimeout=

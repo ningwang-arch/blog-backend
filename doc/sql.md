@@ -42,7 +42,7 @@ update_time ------ datetime # 2022-01-23 21:36:20
 ```sql
 id ------ int # auto increament primary key
 name ------ varchar(255)
-desc ------ varchar(255)
+description ------ varchar(255)
 create_time ------ datetime # 2022-01-23 21:36:20
 update_time ------ datetime # 2022-01-23 21:36:20
 type ------ int # 0 - tag  1 - category
@@ -83,7 +83,7 @@ img ------ varchar(512)
 url ------ varchar(512)
 state ------ int # default 1; 1 是已经完成 ，2 是正在进行，3 是没完成
 
-state_time ------ datetime # 2022-01-23 21:36:20
+start_time ------ datetime # 2022-01-23 21:36:20
 end_time ------ datetime # 2022-01-23 21:36:20
 update_time ------ datetime # 2022-01-23 21:36:20
 ```
