@@ -15,7 +15,7 @@ set(CMAKE_C_FLAGS
     "$ENV{CXXFLAGS} -rdynamic -O2 -fPIC -ggdb -std=c11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations"
 )
 
-option(TESTS_BUILD "enable tests/ build" ON)
+option(TESTS_BUILD "enable tests/ build" OFF)
 
 link_directories(/usr/lib/mysql)
 
@@ -27,10 +27,19 @@ include_directories(/usr/include/mysql)
 
 set(
     LIB_SRC
+    src/application/application.hpp
     src/ConnectionPool/CommonConnectionPool.cpp
     src/ConnectionPool/Connection.cpp
     src/ConnectionPool/ResultSet.cpp
+
+    src/daemon/daemon.cc
+
+    src/http_server/http_server.hpp
+
     src/oss/oss_client.cc
+    
+    src/handlers.cc
+
     src/util.cc
     )
 
@@ -44,7 +53,16 @@ include_directories("${PROJECT_SOURCE_DIR}/pico")
 add_subdirectory(pico)
 set(EXTRA_LIBS ${EXTRA_LIBS} pico blog)
 
-set(LIBS ${LIBS} pico blog mysqlclient mbedtls mbedcrypto)
+set(LIBS 
+    ${LIBS} 
+    pico 
+    blog 
+    mysqlclient 
+    mbedtls 
+    mbedcrypto 
+    jsoncpp
+    boost_program_options
+    )
 
 if(TESTS_BUILD)
 
@@ -68,4 +86,19 @@ add_dependencies(test_hmac_sha1 ${EXTRA_LIBS})
 force_redefine_file_macro_for_sources(test_hmac_sha1)
 target_link_libraries(test_hmac_sha1 ${LIBS})
 
+add_executable(test_server tests/test_server.cc)
+add_dependencies(test_server ${EXTRA_LIBS})
+force_redefine_file_macro_for_sources(test_server)
+target_link_libraries(test_server ${LIBS})
+
+add_executable(test_app tests/test_app.cc)
+add_dependencies(test_app ${EXTRA_LIBS})
+force_redefine_file_macro_for_sources(test_app)
+target_link_libraries(test_app ${LIBS})
+
 endif()
+
+add_executable(main src/main.cc)
+add_dependencies(main ${EXTRA_LIBS})
+force_redefine_file_macro_for_sources(main)
+target_link_libraries(main ${LIBS})

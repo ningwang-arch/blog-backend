@@ -13,8 +13,8 @@ Connection::~Connection() {
     if (_conn != nullptr) { mysql_close(_conn); }
 }
 
-bool Connection::connect(string ip, unsigned short port, string username, string password,
-                         string dbname) {
+bool Connection::connect(std::string ip, unsigned short port, std::string username,
+                         std::string password, std::string dbname) {
     MYSQL* p = mysql_real_connect(
         _conn, ip.c_str(), username.c_str(), password.c_str(), dbname.c_str(), port, nullptr, 0);
     if (p == nullptr) {
@@ -24,7 +24,7 @@ bool Connection::connect(string ip, unsigned short port, string username, string
     return true;
 }
 
-bool Connection::update(string sql) {
+bool Connection::update(std::string sql) {
     std::lock_guard<std::mutex> lock(_mutex);
     if (mysql_real_query(_conn, sql.c_str(), (unsigned long)strlen(sql.c_str()))) {
         std::string log = "Update failed: " + sql + " mysql_error: " + mysql_error(_conn);
@@ -34,7 +34,7 @@ bool Connection::update(string sql) {
     return true;
 }
 
-ResultSet* Connection::query(string sql) {
+ResultSet* Connection::query(std::string sql) {
     std::lock_guard<std::mutex> lock(_mutex);
     if (mysql_real_query(_conn, sql.c_str(), (unsigned long)strlen(sql.c_str()))) {
         std::string log = "Query failed: " + sql + " mysql_error: " + mysql_error(_conn);

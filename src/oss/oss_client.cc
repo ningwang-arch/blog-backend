@@ -99,8 +99,6 @@ bool OSSClient::upload_data(const std::string& fileName, const std::string& data
     pico::HttpResponse::Ptr resp =
         pico::HttpConnection::doRequest(pico::HttpMethod::PUT, url, headers, data);
 
-    std::cout << resp->to_string() << std::endl;
-
     if (!resp || (int)resp->get_status() != 200) {
         LOG_ERROR("upload file %s failed", fileName.c_str());
         return false;

@@ -8,26 +8,26 @@
 #include <mysql/mysql.h>
 #include <string>
 
-using namespace std;
 
 class Connection
 {
 private:
     MYSQL* _conn;
     clock_t _alivetime;
-    mutex _mutex;
+    std::mutex _mutex;
 
 public:
     Connection();
 
     // connect to database
-    bool connect(string ip, unsigned short port, string username, string password, string dbname);
+    bool connect(std::string ip, unsigned short port, std::string username, std::string password,
+                 std::string dbname);
 
     // insert delete update
-    bool update(string sql);
+    bool update(std::string sql);
 
     // select
-    ResultSet* query(string sql);
+    ResultSet* query(std::string sql);
 
     void refreshAliveTime();
 

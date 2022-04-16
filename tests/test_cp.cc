@@ -18,10 +18,10 @@ void test() {
     while ((r = rs->next()) != nullptr) {
         int id = r->getInt("id");
         if (id == NO_SUCH_KEY) {
-            cout << "Key error" << endl;
+            std::cout << "Key error" << std::endl;
             break;
         }
-        cout << r->getInt("id") << " " << r->getString("name") << endl;
+        std::cout << r->getInt("id") << " " << r->getString("name") << std::endl;
     }
 }
 

@@ -100,6 +100,6 @@ int main(int argc, char const* argv[]) {
     // test_download_data();
     // test_delete_file();
     // test_list_files();
-    // test_get_file_size();
+    test_get_file_size();
     return 0;
 }

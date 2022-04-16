@@ -309,7 +309,7 @@ POST /addReplyMessage
 request: {'id': '5bdee076bc454f49bba03ab0', 'state': '', 'content': 'abc'}
 response: {"data": {}, "code": 0, "message": "success"}
 
-// from = current manager, to = replayComment.from / MainComment.user_id
+// from = current manager, to =  MainComment.user_id
 ```
 
 ```
@@ -317,7 +317,7 @@ POST /delMessage
 request: {'id': '5bdee076bc454f49bba03ab0'}
 response: {"data": {}, "code": 0, "message": "success"}
 
-// search in MainComment & ReplyComment
+// search in MainComment
 ```
 
 ```

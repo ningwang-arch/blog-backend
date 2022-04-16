@@ -6,7 +6,7 @@ Result::Result(MYSQL_RES* result, MYSQL_ROW row) {
     MYSQL_FIELD* field;
     for (int i = 0; i < num_fields; i++) {
         field = mysql_fetch_field_direct(result, i);
-        um.insert(pair<string, string>(field->name, row[i]));
+        um.insert(std::pair<std::string, std::string>(field->name, row[i]));
     }
 }
 
@@ -14,9 +14,9 @@ Result::Result() {}
 
 bool Result::equals(const Result* r) {
     if (um.size() != r->um.size()) return false;
-    unordered_map<string, string>::const_iterator it = um.begin();
+    std::unordered_map<std::string, std::string>::const_iterator it = um.begin();
     while (it != um.end()) {
-        unordered_map<string, string>::const_iterator it2 = r->um.find(it->first);
+        std::unordered_map<std::string, std::string>::const_iterator it2 = r->um.find(it->first);
         if (it2 != r->um.end()) {
             if (it2->second != it->second) return false;
         }
@@ -29,13 +29,14 @@ bool Result::equals(const Result* r) {
 }
 
 Result::Result(const Result* r) {
-    for (unordered_map<string, string>::const_iterator it = r->um.begin(); it != r->um.end();
+    for (std::unordered_map<std::string, std::string>::const_iterator it = r->um.begin();
+         it != r->um.end();
          it++) {
-        um.insert(pair<string, string>(it->first, it->second));
+        um.insert(std::pair<std::string, std::string>(it->first, it->second));
     }
 }
 
-string Result::getValue(const string key) {
+std::string Result::getValue(const std::string key) {
     if (um.find(key) == um.end()) {
         LOG_ERROR("key '%s' not found", key.c_str());
         return "";
@@ -43,21 +44,21 @@ string Result::getValue(const string key) {
     return um.find(key)->second;
 }
 
-int Result::getInt(const string key) {
+int Result::getInt(const std::string key) {
     if (getValue(key) == "") { return NO_SUCH_KEY; }
     return stoi(getValue(key));
 }
 
-double Result::getDouble(const string key) {
+double Result::getDouble(const std::string key) {
     if (getValue(key) == "") { return NO_SUCH_KEY; }
     return stod(getValue(key));
 }
 
-string Result::getString(const string key) {
+std::string Result::getString(const std::string key) {
     return getValue(key);
 }
 
-bool Result::getBool(const string key) {
+bool Result::getBool(const std::string key) {
     int value = getInt(key);
     if (value == NO_SUCH_KEY) { return false; }
     return value == 1;
@@ -110,16 +111,17 @@ void ResultSet::insert(Result* r) {
     v.push_back(r2);
 }
 
-ResultSet* ResultSet::offset(int start, int cnt) {
-    int size = v.size();
-    ResultSet* result = new ResultSet();
+void ResultSet::offset(int start, int cnt) {
+    if (start < 0) { start = 0; }
+    if (cnt < 0) { cnt = 0; }
+    if (start + cnt > (int)v.size()) { cnt = v.size() - start; }
+    it = v.begin();
 
-    result->reset();
-
-    if (start >= size) { return result; }
-    if (start + cnt > size) { cnt = size - start; }
-    for (int i = start; i < start + cnt; i++) { result->insert(v[i]); }
-    return result;
+    std::vector<Result*> v2;
+    v2.assign(v.begin() + start, v.begin() + start + cnt);
+    v.clear();
+    v.assign(v2.begin(), v2.end());
+    v2.clear();
 }
 
 ResultSet::ResultSet(const ResultSet& rs) {

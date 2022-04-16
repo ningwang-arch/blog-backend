@@ -1,16 +1,5 @@
 CREATE database IF NOT EXISTS `blog`;
 use blog;
-# Manager
-DROP TABLE IF EXISTS `manager`;
-CREATE TABLE `manager` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `created_at` datetime NOT NULL,
-  `avatar` varchar(255) NOT NULL DEFAULT 'user',
-  `role` int DEFAULT 0,
-  PRIMARY KEY (`id`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 #User
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
@@ -45,6 +34,7 @@ DROP TABLE IF EXISTS `tag_category`;
 CREATE TABLE `tag_category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
+  `desc` VARCHAR(255) NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   `t_c` int(11) NOT NULL,
@@ -86,6 +76,6 @@ CREATE TABLE `project` (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `end_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status` int(11) NOT NULL DEFAULT 0 COMMENT '0:finished, 1: doing, -1:unfinished',
+  `status` int(11) NOT NULL DEFAULT 0 COMMENT '1 finished ， 2 doing ， 3 to do',
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;

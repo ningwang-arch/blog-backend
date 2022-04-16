@@ -26,14 +26,14 @@ bool ConnectionPool::loadConfigFile() {
     while (!feof(fp)) {
         char line[1024] = {0};
         fgets(line, 1024, fp);
-        string str(line);
+        std::string str(line);
         int index = str.find('=', 0);
 
         if (index == -1) { continue; }
 
         int endIndex = str.find('\n', index);
-        string key = str.substr(0, index);
-        string value = str.substr(index + 1, endIndex - index - 1);
+        std::string key = str.substr(0, index);
+        std::string value = str.substr(index + 1, endIndex - index - 1);
 
         if (key == "ip") { _ip = value; }
         else if (key == "port") {
@@ -75,16 +75,16 @@ ConnectionPool::ConnectionPool() {
         _connCnt++;
     }
 
-    thread produce(std::bind(&ConnectionPool::productConnectionTask, this));
+    std::thread produce(std::bind(&ConnectionPool::productConnectionTask, this));
     produce.detach();
 
-    thread scanner(std::bind(&ConnectionPool::scannerConnectionTask, this));
+    std::thread scanner(std::bind(&ConnectionPool::scannerConnectionTask, this));
     scanner.detach();
 }
 
 void ConnectionPool::productConnectionTask() {
     for (;;) {
-        unique_lock<mutex> lock(_queueMutex);
+        std::unique_lock<std::mutex> lock(_queueMutex);
         while (!_connQueue.empty()) { cv.wait(lock); }
         if (_connCnt < _maxSize) {
             Connection* p = new Connection();
@@ -96,17 +96,18 @@ void ConnectionPool::productConnectionTask() {
     }
 }
 
-shared_ptr<Connection> ConnectionPool::getConnection() {
-    unique_lock<mutex> lock(_queueMutex);
+std::shared_ptr<Connection> ConnectionPool::getConnection() {
+    std::unique_lock<std::mutex> lock(_queueMutex);
     while (_connQueue.empty()) {
-        if (cv_status::timeout == cv.wait_for(lock, std::chrono::milliseconds(_connectionTimeout)))
+        if (std::cv_status::timeout ==
+            cv.wait_for(lock, std::chrono::milliseconds(_connectionTimeout)))
             if (_connQueue.empty()) {
                 LOG_WARN("get connection timeout");
                 return nullptr;
             }
     }
-    shared_ptr<Connection> sp(_connQueue.front(), [&](Connection* pcon) {
-        unique_lock<mutex> lock(_queueMutex);
+    std::shared_ptr<Connection> sp(_connQueue.front(), [&](Connection* pcon) {
+        std::unique_lock<std::mutex> lock(_queueMutex);
         pcon->refreshAliveTime();
         _connQueue.push(pcon);
     });
@@ -118,8 +119,8 @@ shared_ptr<Connection> ConnectionPool::getConnection() {
 
 void ConnectionPool::scannerConnectionTask() {
     for (;;) {
-        this_thread::sleep_for(chrono::seconds(_maxIdleTime));
-        unique_lock<mutex> lock(_queueMutex);
+        std::this_thread::sleep_for(std::chrono::seconds(_maxIdleTime));
+        std::unique_lock<std::mutex> lock(_queueMutex);
 
         while (_connCnt > _initSize) {
             Connection* p = _connQueue.front();
