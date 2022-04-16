@@ -23,7 +23,6 @@ int app_start(int argc, const char* argv[]) {
 
 
 int main(int argc, char const* argv[]) {
-    std::string address;
     bool is_daemon = false;
     po::options_description desc("options");
     desc.add_options()("help,h", "help message")(

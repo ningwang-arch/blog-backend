@@ -296,3 +296,20 @@ std::string get_user_id(std::string email, std::string username) {
     if ((res = result->next())) { return res->getString("id"); }
     return "";
 }
+
+// convert Percent-encoding to UTF-8
+std::string url_decode(std::string str) {
+    std::string result;
+    char ch;
+    int i, ii;
+    for (i = 0; i < (int)str.length(); i++) {
+        if (str[i] != '%') { result.push_back(str[i]); }
+        else {
+            sscanf(str.substr(i + 1, 2).c_str(), "%x", &ii);
+            ch = static_cast<char>(ii);
+            result.push_back(ch);
+            i = i + 2;
+        }
+    }
+    return result;
+}

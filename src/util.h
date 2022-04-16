@@ -53,4 +53,7 @@ bool is_email_valid(std::string email);
 
 std::string get_user_id(std::string email, std::string username);
 
+// convert Percent-encoding to UTF-8
+std::string url_decode(std::string str);
+
 #endif

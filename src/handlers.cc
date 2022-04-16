@@ -1462,13 +1462,16 @@ void getArticleList(const request& req, response& resp, Application* app) {
     int page_size = std::stoi(req->get_param("pageSize"));
     std::string keyword = req->get_param("keyword");
     std::string tag_id = req->get_param("tag_id");
+    std::string title = req->get_param("title");
     std::string category_id = req->get_param("category_id");
+
+    keyword = url_decode(keyword);
+    title = url_decode(title);
 
     std::string sql = " select * from article where keyword like '%" + keyword + "%'" +
                       " and tags like '%" + tag_id + "%' and category like '%" + category_id +
-                      "%' order by id desc limit " + std::to_string((page - 1) * page_size) + "," +
-                      std::to_string(page_size);
-
+                      "%' and title like '%" + title + "%' order by id desc limit " +
+                      std::to_string((page - 1) * page_size) + "," + std::to_string(page_size);
     ResultSet* rs = conn->query(sql);
     data["count"] = rs->size();
     Result* res = nullptr;
