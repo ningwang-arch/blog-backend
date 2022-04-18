@@ -37,6 +37,8 @@ public:
 
         XX("/loginAdmin", pico::HttpMethod::POST, login_handler);
 
+        XX("/currentUser", pico::HttpMethod::GET, currentUser);
+
         XX("/getCategoryList", pico::HttpMethod::GET, getCategoryList);
         XX("/delCategory", pico::HttpMethod::POST, delCategory);
         XX("/addCategory", pico::HttpMethod::POST, addCategory);
@@ -68,6 +70,8 @@ public:
         XX("/addThirdComment", pico::HttpMethod::POST, addThirdComment);
 
 #undef XX
+
+        m_server.addGlobalRoute("/log/*", pico::HttpMethod::GET, get_log);
     }
 
     pico::HttpServer<pico::UTF8, pico::CORSHandler, pico::Session>::Ptr get_server() {

@@ -28,6 +28,10 @@ public:
         m_request_handler->addRoute(path, method, handler);
     }
 
+    void addGlobalRoute(std::string path, pico::HttpMethod method, Handler handler) {
+        m_request_handler->addGlobalRoute(path, method, handler);
+    }
+
     void start() {
         m_main_worker->schedule([this]() { this->run_in_fiber(); });
         m_main_worker->addTimer(

@@ -69,4 +69,8 @@ void addComment(const request& req, response& resp, Application* app);
 
 void addThirdComment(const request& req, response& resp, Application* app);
 
+void currentUser(const request& req, response& resp, Application* app);
+
+void get_log(const request& req, response& resp);
+
 #endif

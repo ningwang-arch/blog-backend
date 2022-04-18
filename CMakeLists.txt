@@ -15,7 +15,7 @@ set(CMAKE_C_FLAGS
     "$ENV{CXXFLAGS} -rdynamic -O2 -fPIC -ggdb -std=c11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations"
 )
 
-option(TESTS_BUILD "enable tests/ build" OFF)
+option(TESTS_BUILD "enable tests/ build" ON)
 
 link_directories(/usr/lib/mysql)
 
@@ -95,6 +95,11 @@ add_executable(test_app tests/test_app.cc)
 add_dependencies(test_app ${EXTRA_LIBS})
 force_redefine_file_macro_for_sources(test_app)
 target_link_libraries(test_app ${LIBS})
+
+add_executable(test_log tests/test_log.cc)
+add_dependencies(test_log ${EXTRA_LIBS})
+force_redefine_file_macro_for_sources(test_log)
+target_link_libraries(test_log ${LIBS})
 
 endif()
 
