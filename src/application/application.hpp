@@ -5,7 +5,6 @@
 #include <string>
 
 #include "src/ConnectionPool/CommonConnectionPool.h"
-#include "src/handlers.h"
 #include "src/http_server/http_server.hpp"
 #include "src/oss/oss_client.h"
 #include "src/util.h"

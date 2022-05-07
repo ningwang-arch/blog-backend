@@ -15,7 +15,7 @@ set(CMAKE_C_FLAGS
     "$ENV{CXXFLAGS} -rdynamic -O2 -fPIC -ggdb -std=c11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations"
 )
 
-option(TESTS_BUILD "enable tests/ build" ON)
+option(TESTS_BUILD "enable tests/ build" OFF)
 
 link_directories(/usr/lib/mysql)
 
@@ -48,8 +48,6 @@ set(
     src/http_server/http_server.hpp
 
     src/oss/oss_client.cc
-    
-    # src/handlers.cc
 
     src/util.cc
     ${servlets}
