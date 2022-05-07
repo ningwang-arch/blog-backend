@@ -6,9 +6,8 @@
 
 #include "pico/log/LogAppender.h"
 
+#include "pico/macro.h"
 
-#define CONF_DIR "conf/"
-#define CONF_ROOT "root."
 
 namespace po = boost::program_options;
 

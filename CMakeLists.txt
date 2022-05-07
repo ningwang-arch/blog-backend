@@ -69,6 +69,7 @@ set(LIBS
     blog 
     mysqlclient 
     mbedtls 
+    pthread 
     mbedcrypto 
     jsoncpp
     boost_program_options

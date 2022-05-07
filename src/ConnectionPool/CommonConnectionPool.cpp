@@ -2,6 +2,7 @@
 #include "Connection.h"
 #include "pico/config.h"
 #include "pico/logging.h"
+#include "pico/macro.h"
 #include <chrono>
 #include <condition_variable>
 #include <cstdio>
@@ -11,11 +12,6 @@
 #include <memory>
 #include <mutex>
 #include <thread>
-
-#ifndef CONF_ROOT
-#    define CONF_ROOT "root."
-#endif
-
 
 static pico::ConfigVar<std::string>::Ptr g_sql_conf =
     pico::Config::Lookup<std::string>(CONF_ROOT "mysql.conf", "mysql.ini", "mysql conf");
@@ -35,7 +31,8 @@ bool ConnectionPool::loadConfigFile() {
 
     while (!feof(fp)) {
         char line[1024] = {0};
-        fgets(line, 1024, fp);
+        char* res = fgets(line, 1024, fp);
+        if (res) {}
         std::string str(line);
         int index = str.find('=', 0);
 

@@ -6,9 +6,7 @@
 #include "pico/pico.h"
 #include "src/util.h"
 
-#ifndef CONF_DIR
-#    define CONF_DIR "conf/"
-#endif
+#include "pico/macro.h"
 
 OSSClient::OSSClient(const std::string& bucketName, const std::string& config_file) {
     m_accessId = "";
