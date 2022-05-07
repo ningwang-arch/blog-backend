@@ -24,6 +24,17 @@ include_directories("${PROJECT_BINARY_DIR}")
 include_directories(/usr/include/mysql)
 
 
+set(servlets
+    src/servlets/article_servlet.cc
+    src/servlets/category_servlet.cc
+    src/servlets/comment_servlet.cc
+    src/servlets/login_servlet.cc
+    src/servlets/message_servlet.cc
+    src/servlets/project_servlet.cc
+    src/servlets/root_servlet.cc
+    src/servlets/tag_servlet.cc
+)
+
 
 set(
     LIB_SRC
@@ -38,9 +49,10 @@ set(
 
     src/oss/oss_client.cc
     
-    src/handlers.cc
+    # src/handlers.cc
 
     src/util.cc
+    ${servlets}
     )
 
 add_library(blog SHARED ${LIB_SRC})
@@ -62,6 +74,7 @@ set(LIBS
     mbedcrypto 
     jsoncpp
     boost_program_options
+    yaml-cpp
     )
 
 if(TESTS_BUILD)

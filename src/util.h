@@ -15,6 +15,8 @@
 
 #include <json/json.h>
 
+#include "ConnectionPool/CommonConnectionPool.h"
+
 
 void dump_buf(char* info, uint8_t* buf, uint32_t len);
 
@@ -55,5 +57,7 @@ std::string get_user_id(std::string email, std::string username);
 
 // convert Percent-encoding to UTF-8
 std::string url_decode(std::string str);
+
+std::shared_ptr<Connection> get_connection();
 
 #endif

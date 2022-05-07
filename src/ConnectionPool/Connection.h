@@ -17,11 +17,11 @@ private:
     std::mutex _mutex;
 
 public:
-    Connection();
+    Connection(std::string ip, unsigned short port, std::string username, std::string password,
+               std::string dbname);
 
     // connect to database
-    bool connect(std::string ip, unsigned short port, std::string username, std::string password,
-                 std::string dbname);
+    bool connect();
 
     // insert delete update
     bool update(std::string sql);
@@ -33,7 +33,17 @@ public:
 
     clock_t getAliveTime();
 
+    void reconnect();
+
     ~Connection();
+
+private:
+    bool reexecute(std::string sql);
+    std::string m_ip;
+    unsigned short m_port;
+    std::string m_username;
+    std::string m_password;
+    std::string m_dbname;
 };
 
 #endif /* CONNECTION_H */

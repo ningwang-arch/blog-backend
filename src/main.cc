@@ -1,20 +1,35 @@
 #include "application/application.hpp"
 #include "daemon/daemon.h"
 
+#include "pico/config.h"
 #include <boost/program_options.hpp>
+
+#include "pico/log/LogAppender.h"
+
+
+#define CONF_DIR "conf/"
+#define CONF_ROOT "root."
 
 namespace po = boost::program_options;
 
 static std::string address = "";
 
-#ifndef DEFAULT_ADDRESS
-#    define DEFAULT_ADDRESS "127.0.0.1:8080"
-#endif
+static pico::ConfigVar<std::string>::Ptr g_server_addr =
+    pico::Config::Lookup<std::string>(CONF_ROOT "server.address", "127.0.0.1", "server address");
+
+static pico::ConfigVar<std::string>::Ptr g_server_port =
+    pico::Config::Lookup<std::string>(CONF_ROOT "server.port", "8080", "server port");
+
+static pico::ConfigVar<std::string>::Ptr g_blog_log_path =
+    pico::Config::Lookup<std::string>(CONF_ROOT "log.blog.path", std::string(), "path of blog log");
+
+static pico::ConfigVar<std::string>::Ptr g_blog_log_file = pico::Config::Lookup<std::string>(
+    CONF_ROOT "log.blog.file", std::string(), "filename of blog log");
 
 int app_start(int argc, const char* argv[]) {
     LOG_INFO("app_start");
 
-    Application app(address);
+    Application app(g_server_addr->getValue() + ":" + g_server_port->getValue());
 
     app.start();
 
@@ -23,11 +38,21 @@ int app_start(int argc, const char* argv[]) {
 
 
 int main(int argc, char const* argv[]) {
+    pico::Config::LoadFromFile("web.yml");
+
+    pico::FileAppender::Ptr fileAppender(
+        new pico::FileAppender(g_blog_log_path->getValue() + g_blog_log_file->getValue()));
+
+    pico::PatternLayout::Ptr layout(new pico::PatternLayout());
+    layout->setPattern("[%d{%Y-%m-%d %H:%M:%S}] %p %m");
+
+    fileAppender->setLayout(layout);
+
+    g_logger->addAppender(fileAppender);
+
     bool is_daemon = false;
     po::options_description desc("options");
-    desc.add_options()("help,h", "help message")(
-        "addr,a", po::value<std::string>(&address)->default_value(DEFAULT_ADDRESS), "address")(
-        "daemon,d", po::bool_switch(&is_daemon), "daemon");
+    desc.add_options()("help,h", "help message")("daemon,d", po::bool_switch(&is_daemon), "daemon");
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
     po::notify(vm);

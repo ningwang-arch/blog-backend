@@ -29,7 +29,7 @@ int main(int argc, char const* argv[]) {
 
     //     server->start();
     // });
-    HttpServer<> server("0.0.0.0:8080");
+    HttpServer server("0.0.0.0:8080");
 
     server.start();
     return 0;

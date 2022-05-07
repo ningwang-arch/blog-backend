@@ -1,5 +1,6 @@
 #include "CommonConnectionPool.h"
 #include "Connection.h"
+#include "pico/config.h"
 #include "pico/logging.h"
 #include <chrono>
 #include <condition_variable>
@@ -11,13 +12,22 @@
 #include <mutex>
 #include <thread>
 
+#ifndef CONF_ROOT
+#    define CONF_ROOT "root."
+#endif
+
+
+static pico::ConfigVar<std::string>::Ptr g_sql_conf =
+    pico::Config::Lookup<std::string>(CONF_ROOT "mysql.conf", "mysql.ini", "mysql conf");
+
 ConnectionPool* ConnectionPool::getConnectionPool() {
     static ConnectionPool pool;
     return &pool;
 }
 
 bool ConnectionPool::loadConfigFile() {
-    FILE* fp = fopen("mysql.ini", "r");
+    std::string path = CONF_DIR + g_sql_conf->getValue();
+    FILE* fp = fopen(path.c_str(), "r");
     if (fp == nullptr) {
         LOG_ERROR("open mysql.ini failed");
         return false;
@@ -68,8 +78,8 @@ ConnectionPool::ConnectionPool() {
     if (!loadConfigFile()) { return; }
 
     for (int i = 0; i < _initSize; i++) {
-        Connection* p = new Connection();
-        p->connect(_ip, _port, _username, _password, _dbname);
+        Connection* p = new Connection(_ip, _port, _username, _password, _dbname);
+        p->connect();
         p->refreshAliveTime();
         _connQueue.push(p);
         _connCnt++;
@@ -87,8 +97,8 @@ void ConnectionPool::productConnectionTask() {
         std::unique_lock<std::mutex> lock(_queueMutex);
         while (!_connQueue.empty()) { cv.wait(lock); }
         if (_connCnt < _maxSize) {
-            Connection* p = new Connection();
-            p->connect(_ip, _port, _username, _password, _dbname);
+            Connection* p = new Connection(_ip, _port, _username, _password, _dbname);
+            p->connect();
             _connQueue.push(p);
             _connCnt++;
         }

@@ -78,6 +78,7 @@ ResultSet::ResultSet(MYSQL_RES* result) {
 }
 
 ResultSet::ResultSet() {
+    v.clear();
     it = v.begin();
 }
 

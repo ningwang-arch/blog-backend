@@ -125,6 +125,7 @@ bool CheckParameter(const std::string& Parameter) {
 
 // 2022-05-19T00:00:00.000Z -> 2022-01-07 21:39:17
 std::string format_time(const std::string& time_str) {
+    if (time_str.empty()) { return ""; }
     std::string time_str_new = time_str.substr(0, 19);
     time_str_new.replace(10, 1, " ");
     time_str_new.replace(13, 1, ":");
@@ -312,4 +313,9 @@ std::string url_decode(std::string str) {
         }
     }
     return result;
+}
+
+std::shared_ptr<Connection> get_connection() {
+    ConnectionPool* pool = ConnectionPool::getConnectionPool();
+    return pool->getConnection();
 }
