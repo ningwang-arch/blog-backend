@@ -4,11 +4,11 @@
 #include <json/json.h>
 #include <sstream>
 
-#include "pico/config.h"
+#include "util.h"
 
-#ifndef CONF_ROOT
-#    define CONF_ROOT "root."
-#endif
+#include "pico/config.h"
+#include "pico/macro.h"
+
 
 static pico::ConfigVar<std::string>::Ptr g_blog_log_path =
     pico::Config::Lookup<std::string>(CONF_ROOT "log.blog.path", std::string(), "path of blog log");
@@ -48,6 +48,8 @@ void CurrentUserServlet::doGet(const pico::HttpRequest::Ptr& req, pico::HttpResp
     resp_json["code"] = code;
     resp_json["message"] = message;
     resp_json["data"] = data;
+
+    resp->set_body(jsonToStr(resp_json));
 }
 
 void GetLogServlet::doGet(const pico::HttpRequest::Ptr& req, pico::HttpResponse::Ptr& resp) {

@@ -4,12 +4,10 @@
 
 #include "oss/oss_client.h"
 #include "pico/config.h"
+#include "pico/macro.h"
 #include "pico/session.h"
 #include "util.h"
 
-#ifndef CONF_ROOT
-#    define CONF_ROOT "root."
-#endif
 
 static pico::ConfigVar<std::string>::Ptr g_oss_bucket =
     pico::Config::Lookup<std::string>(CONF_ROOT "oss.bucket", std::string(), "oss bucket name");
