@@ -6,7 +6,7 @@ void test() {
     pico::FileAppender::Ptr fileApender(new pico::FileAppender("test.log"));
     fileApender->setLayout(std::shared_ptr<pico::PatternLayout>(new pico::PatternLayout()));
 
-    g_logger->addAppender(fileApender);
+    // g_logger->addAppender(fileApender);
 
     // g_logger->info("Hello World!");
 

@@ -1,0 +1,40 @@
+servlets:
+  # check health of the server
+  - {name: root, path: /, class: RootServlet}
+  # login servlet
+  - {name: login, path: /loginAdmin, class: LoginServlet}
+  # get user info
+  - {name: user, path: /currentUser, class: CurrentUserServlet}
+  # get logs
+  - {name: log, path: /log/*, class: GetLogServlet}
+  # category servlet
+  - {name: category-list, path: /getCategoryList, class: GetCategoryListServlet}
+  - {name: category-add, path: /addCategory, class: AddCategoryServlet}
+  - {name: category-del, path: /delCategory, class: DelCategoryServlet}
+  # tag servlet
+  - {name: tag-list, path: /getTagList, class: GetTagListServlet}
+  - {name: tag-add, path: /addTag, class: AddTagServlet}
+  - {name: tag-del, path: /delTag, class: DelTagServlet}
+  # project servlet
+  - {name: project-list, path: /getProjectList, class: GetProjectListServlet}
+  - {name: project-add, path: /addProject, class: AddProjectServlet}
+  - {name: project-del, path: /delProject, class: DelProjectServlet}
+  - {name: project-update, path: /updateProject, class: UpdateProjectServlet}
+  - {name: project-detail, path: /getProjectDetail, class: GetProjectDetailServlet}
+  # article servlet
+  - {name: article-list, path: /getArticleList, class: GetArticleListServlet}
+  - {name: article-list-admin, path: /getArticleListAdmin, class: GetArticleListAdminServlet}
+  - {name: article-add, path: /addArticle, class: AddArticleServlet}
+  - {name: article-del, path: /delArticle, class: DelArticleServlet}
+  - {name: article-update, path: /updateArticle, class: UpdateArticleServlet}
+  - {name: article-detail, path: /getArticleDetail, class: GetArticleDetailServlet}
+  # comment servlet
+  - {name: change-comment, path: /changeComment, class: ChangeCommentServlet}
+  - {name: change-third-comment, path: /changeThirdComment, class: ChangeThirdCommentServlet}
+  - {name: comment-add, path: /addComment, class: AddCommentServlet}
+  - {name: add-third-comment, path: /addThirdComment, class: AddThirdCommentServlet}
+  # message servlet
+  - {name: message-list, path: /getMessageList, class: GetMessageListServlet}
+  - {name: message-add, path: /addReplyMessage, class: AddReplyMessageServlet}
+  - {name: message-del, path: /delMessage, class: DelMessageServlet}
+  - {name: message-detail, path: /getMessageDetail, class: GetMessageDetailServlet}

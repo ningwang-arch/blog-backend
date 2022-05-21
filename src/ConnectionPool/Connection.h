@@ -4,6 +4,7 @@
 #include "ResultSet.h"
 #include <bits/types/clock_t.h>
 #include <ctime>
+#include <memory>
 #include <mutex>
 #include <mysql/mysql.h>
 #include <string>
@@ -12,7 +13,7 @@
 class Connection
 {
 private:
-    MYSQL* _conn;
+    std::shared_ptr<MYSQL> _conn;
     clock_t _alivetime;
     std::mutex _mutex;
 
@@ -27,18 +28,31 @@ public:
     bool update(std::string sql);
 
     // select
-    ResultSet* query(std::string sql);
+    std::shared_ptr<ResultSet> query(std::string sql);
 
     void refreshAliveTime();
 
+    // prepare statement
+    std::shared_ptr<MYSQL_STMT> prepare(std::string sql);
+    // bind parameter
+    bool bindParam(std::shared_ptr<MYSQL_STMT> stmt, int index, int value);
+    bool bindParam(std::shared_ptr<MYSQL_STMT> stmt, int index, std::string value);
+    bool bindParam(std::shared_ptr<MYSQL_STMT> stmt, int index, double value);
+    bool bindParam(std::shared_ptr<MYSQL_STMT> stmt, int index, std::tm value);
+    bool bindParam(std::shared_ptr<MYSQL_STMT> stmt, int index, std::string value, int length);
+
+    // execute statement
+    bool executeUpdate(std::shared_ptr<MYSQL_STMT> stmt);
+    std::shared_ptr<ResultSet> executeQuery(std::shared_ptr<MYSQL_STMT> stmt);
+
+
     clock_t getAliveTime();
 
-    void reconnect();
+    bool ping();
 
     ~Connection();
 
 private:
-    bool reexecute(std::string sql);
     std::string m_ip;
     unsigned short m_port;
     std::string m_username;

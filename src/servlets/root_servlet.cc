@@ -7,17 +7,16 @@
 #include "util.h"
 
 #include "pico/config.h"
-#include "pico/macro.h"
 
 
 static pico::ConfigVar<std::string>::Ptr g_blog_log_path =
-    pico::Config::Lookup<std::string>(CONF_ROOT "log.blog.path", std::string(), "path of blog log");
+    pico::Config::Lookup<std::string>("other.log.blog.path", std::string(), "path of blog log");
 
-static pico::ConfigVar<std::string>::Ptr g_blog_log_file = pico::Config::Lookup<std::string>(
-    CONF_ROOT "log.blog.file", std::string(), "filename of blog log");
+static pico::ConfigVar<std::string>::Ptr g_blog_log_file =
+    pico::Config::Lookup<std::string>("other.log.blog.file", std::string(), "filename of blog log");
 
-static pico::ConfigVar<std::string>::Ptr g_nginx_log_path = pico::Config::Lookup<std::string>(
-    CONF_ROOT "log.nginx.path", std::string(), "path of nginx log");
+static pico::ConfigVar<std::string>::Ptr g_nginx_log_path =
+    pico::Config::Lookup<std::string>("other.log.nginx.path", std::string(), "path of nginx log");
 
 void RootServlet::doGet(const pico::HttpRequest::Ptr& req, pico::HttpResponse::Ptr& resp) {
     resp->set_status(pico::HttpStatus::OK);

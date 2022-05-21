@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 project(blog)
 
 include(pico/cmake/utils.cmake)
+include(cmake/FindMySQL.cmake)
 
 include_directories(.)
 include_directories(./src/)
@@ -23,6 +24,18 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 include_directories(/usr/include/mysql)
 
+find_package(yaml-cpp REQUIRED)
+include_directories("${YAML_CPP_INCLUDE_DIR}")
+
+
+
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(
+    mysqlclient
+    mysqlclient_dev
+    mysqlclient_libs
+    mysqlclient_libs_dev
+)
 
 set(servlets
     src/servlets/article_servlet.cc
@@ -35,22 +48,22 @@ set(servlets
     src/servlets/tag_servlet.cc
 )
 
+set(filters
+    src/filters/params_filter.cc
+    src/filters/session_filter.cc
+)
 
 set(
     LIB_SRC
-    src/application/application.hpp
     src/ConnectionPool/CommonConnectionPool.cpp
     src/ConnectionPool/Connection.cpp
     src/ConnectionPool/ResultSet.cpp
-
-    src/daemon/daemon.cc
-
-    src/http_server/http_server.hpp
 
     src/oss/oss_client.cc
 
     src/util.cc
     ${servlets}
+    ${filters}
     )
 
 add_library(blog SHARED ${LIB_SRC})
@@ -115,7 +128,7 @@ target_link_libraries(test_log ${LIBS})
 
 endif()
 
-add_executable(main src/main.cc)
-add_dependencies(main ${EXTRA_LIBS})
-force_redefine_file_macro_for_sources(main)
-target_link_libraries(main ${LIBS})
+add_executable(app pico/pico/main.cc)
+add_dependencies(app ${EXTRA_LIBS})
+force_redefine_file_macro_for_sources(app)
+target_link_libraries(app ${LIBS})

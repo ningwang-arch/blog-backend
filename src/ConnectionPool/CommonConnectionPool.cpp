@@ -2,7 +2,6 @@
 #include "Connection.h"
 #include "pico/config.h"
 #include "pico/logging.h"
-#include "pico/macro.h"
 #include <chrono>
 #include <condition_variable>
 #include <cstdio>
@@ -13,8 +12,12 @@
 #include <mutex>
 #include <thread>
 
+
+#include "pico/env.h"
+#include "pico/iomanager.h"
+
 static pico::ConfigVar<std::string>::Ptr g_sql_conf =
-    pico::Config::Lookup<std::string>(CONF_ROOT "mysql.conf", "mysql.ini", "mysql conf");
+    pico::Config::Lookup<std::string>("other.mysql.conf", "mysql.ini", "mysql conf");
 
 ConnectionPool* ConnectionPool::getConnectionPool() {
     static ConnectionPool pool;
@@ -22,10 +25,12 @@ ConnectionPool* ConnectionPool::getConnectionPool() {
 }
 
 bool ConnectionPool::loadConfigFile() {
-    std::string path = CONF_DIR + g_sql_conf->getValue();
+    std::string conf_dir = pico::EnvManager::getInstance()->getConfigPath();
+    if (conf_dir[conf_dir.size() - 1] != '/') { conf_dir += "/"; }
+    std::string path = conf_dir + g_sql_conf->getValue();
     FILE* fp = fopen(path.c_str(), "r");
     if (fp == nullptr) {
-        LOG_ERROR("open mysql.ini failed");
+        LOG_ERROR("open %s failed", path.c_str());
         return false;
     }
 
@@ -74,9 +79,11 @@ bool ConnectionPool::loadConfigFile() {
 ConnectionPool::ConnectionPool() {
     if (!loadConfigFile()) { return; }
 
+    mysql_library_init(0, nullptr, nullptr);
+
     for (int i = 0; i < _initSize; i++) {
         Connection* p = new Connection(_ip, _port, _username, _password, _dbname);
-        p->connect();
+        // p->connect();
         p->refreshAliveTime();
         _connQueue.push(p);
         _connCnt++;
@@ -95,7 +102,7 @@ void ConnectionPool::productConnectionTask() {
         while (!_connQueue.empty()) { cv.wait(lock); }
         if (_connCnt < _maxSize) {
             Connection* p = new Connection(_ip, _port, _username, _password, _dbname);
-            p->connect();
+            // p->connect();
             _connQueue.push(p);
             _connCnt++;
         }
@@ -118,10 +125,20 @@ std::shared_ptr<Connection> ConnectionPool::getConnection() {
         pcon->refreshAliveTime();
         _connQueue.push(pcon);
     });
-    _connQueue.pop();
-    cv.notify_all();
-
-    return sp;
+    if (sp->ping()) {
+        _connQueue.pop();
+        cv.notify_all();
+        return sp;
+    }
+    else if (sp->connect()) {
+        _connQueue.pop();
+        cv.notify_all();
+        return sp;
+    }
+    else {
+        LOG_WARN("connected failed");
+        return nullptr;
+    }
 }
 
 void ConnectionPool::scannerConnectionTask() {
@@ -149,4 +166,5 @@ ConnectionPool::~ConnectionPool() {
         _connQueue.pop();
         delete p;
     }
+    mysql_library_end();
 }

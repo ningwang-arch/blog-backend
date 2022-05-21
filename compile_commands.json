@@ -1,0 +1,232 @@
+[
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/address.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/address.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/address.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/address.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/application.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/application.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/application.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/application.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/class_factory.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/class_factory.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/class_factory.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/class_factory.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/config.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/config.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/config.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/config.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/daemon.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/daemon.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/daemon.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/daemon.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/date.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/date.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/date.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/date.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/env.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/env.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/env.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/env.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/fdmanager.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/fdmanager.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/fdmanager.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/fdmanager.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/fiber.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/fiber.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/fiber.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/fiber.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/filter.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/filter.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/filter.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/filter.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/hook.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/hook.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/hook.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/hook.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/http/http_connection.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/http/http_connection.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/http/http_connection.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/http/http_connection.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/http/http_parser.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/http/http_parser.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/http/http_parser.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/http/http_parser.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/http/http_server.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/http/http_server.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/http/http_server.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/http/http_server.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/http/http.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/http/http.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/http/http.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/http/http.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/http/http11_parser.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/http/http11_parser.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/http/http11_parser.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/http/http11_parser.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/http/httpclient_parser.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/http/httpclient_parser.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/http/httpclient_parser.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/http/httpclient_parser.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/http/request_handler.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/http/request_handler.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/http/request_handler.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/http/request_handler.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/http/servlet.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/http/servlet.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/http/servlet.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/http/servlet.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/iomanager.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/iomanager.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/iomanager.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/iomanager.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/jwt/jwt_creator.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/jwt/jwt_creator.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/jwt/jwt_creator.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/jwt/jwt_creator.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/jwt/jwt_decoder.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/jwt/jwt_decoder.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/jwt/jwt_decoder.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/jwt/jwt_decoder.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/jwt/jwt_verifier.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/jwt/jwt_verifier.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/jwt/jwt_verifier.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/jwt/jwt_verifier.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/jwt/jwt.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/jwt/jwt.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/jwt/jwt.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/jwt/jwt.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/logging.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/logging.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/logging.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/logging.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/log/LogAppender.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/log/LogAppender.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/log/LogAppender.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/log/LogAppender.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/log/LogEvent.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/log/LogEvent.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/log/LogEvent.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/log/LogEvent.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/log/Logger.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/log/Logger.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/log/Logger.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/log/Logger.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/log/LoggerManager.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/log/LoggerManager.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/log/LoggerManager.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/log/LoggerManager.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/log/LogLevel.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/log/LogLevel.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/log/LogLevel.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/log/LogLevel.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/log/PatternConverter.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/log/PatternConverter.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/log/PatternConverter.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/log/PatternConverter.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/log/PatternLayout.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/log/PatternLayout.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/log/PatternLayout.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/log/PatternLayout.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/log/SimpleLayout.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/log/SimpleLayout.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/log/SimpleLayout.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/log/SimpleLayout.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/log/TTCCLayout.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/log/TTCCLayout.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/log/TTCCLayout.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/log/TTCCLayout.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/mutex.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/mutex.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/mutex.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/mutex.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/scheduler.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/scheduler.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/scheduler.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/scheduler.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/session.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/session.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/session.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/session.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/socket_stream.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/socket_stream.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/socket_stream.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/socket_stream.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/socket.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/socket.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/socket.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/socket.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/tcp_server.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/tcp_server.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/tcp_server.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/tcp_server.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/thread.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/thread.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/thread.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/thread.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/timer.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/timer.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/timer.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/timer.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/uri.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/uri.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/uri.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/uri.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/util.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/util.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/util.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/util.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++ -Dpico_EXPORTS -D__FILE__=\\\"pico/worker.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -fPIC -o CMakeFiles/pico.dir/pico/worker.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/worker.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/worker.cc"
+},
+{
+  "directory": "/home/eclipse/code/vscode/blog/pico",
+  "command": "/usr/bin/c++  -D__FILE__=\\\"pico/main.cc\\\" -I/home/eclipse/code/vscode/blog/. -I/home/eclipse/code/vscode/blog/./src -I/home/eclipse/code/vscode/blog -I/usr/include/mysql -I/home/eclipse/code/vscode/blog/pico -I/home/eclipse/code/vscode/blog/pico/.  -rdynamic -O2 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Werror -Wno-unused-function -Wno-builtin-macro-redefined -Wno-deprecated-declarations -o CMakeFiles/main.dir/pico/main.cc.o -c /home/eclipse/code/vscode/blog/pico/pico/main.cc",
+  "file": "/home/eclipse/code/vscode/blog/pico/pico/main.cc"
+}
+]

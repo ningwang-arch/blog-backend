@@ -7,13 +7,13 @@ ConnectionPool* pool = ConnectionPool::getConnectionPool();
 void test() {
     std::shared_ptr<Connection> sp = pool->getConnection();
 
-    ResultSet* rs = sp->query("select * from t1 limit 100");
+    std::shared_ptr<ResultSet> rs = sp->query("select * from t1 limit 100");
     if (rs == nullptr) {
         LOG_ERROR("query failed");
         return;
     }
 
-    Result* r = nullptr;
+    Result::Ptr r = nullptr;
 
     while ((r = rs->next()) != nullptr) {
         int id = r->getInt("id");

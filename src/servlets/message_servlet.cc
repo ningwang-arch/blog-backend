@@ -11,42 +11,36 @@ void GetMessageListServlet::doGet(const pico::HttpRequest::Ptr& req,
     std::string message = "success";
     Json::Value data = {};
 
-    auto session = pico::SessionManager::getInstance()->getRequestSession(req, resp);
-    if (!session || !session->has("username")) {
-        code = 200;
-        message = "not login";
-    }
-    else {
-        std::string keyword = req->get_param("keyword");
-        int pageNum = std::stoi(req->get_param("pageNum"));
-        int pageSize = std::stoi(req->get_param("pageSize"));
-        std::string sql = "select * from main_comment where content like '%" + keyword +
-                          "%' and status!=-1 order by created_at desc limit " +
-                          std::to_string((pageNum - 1) * pageSize) + "," + std::to_string(pageSize);
-        ResultSet* rs = conn->query(sql);
-        data["count"] = rs->size();
-        data["list"] = Json::Value(Json::arrayValue);
-        Result* ret = nullptr;
-        while ((ret = rs->next())) {
-            Json::Value item;
-            item["_id"] = ret->getValue("id");
-            item["user_id"] = ret->getValue("user_id");
-            item["content"] = ret->getValue("content");
-            item["state"] = ret->getValue("status");
-            item["create_time"] = ret->getValue("created_at");
-            item["update_time"] = ret->getValue("updated_at");
-            item["avatar"] = "user";
-            item["reply_list"] = get_reply_message(ret->getValue("id"), ret->getValue("user_id"));
-            // get user info
-            sql = "select * from user where id = " + ret->getValue("user_id");
-            ResultSet* rs_user = conn->query(sql);
-            if (rs_user->size() > 0) {
-                Result* res_user = rs_user->next();
-                item["name"] = res_user->getValue("name");
-                item["email"] = res_user->getValue("email");
-            }
-            data["list"].append(item);
+
+    std::string keyword = req->get_param("keyword");
+    int pageNum = std::stoi(req->get_param("pageNum"));
+    int pageSize = std::stoi(req->get_param("pageSize"));
+    std::string sql = "select * from main_comment where content like '%" + keyword +
+                      "%' and status!=-1 order by created_at desc limit " +
+                      std::to_string((pageNum - 1) * pageSize) + "," + std::to_string(pageSize);
+    std::shared_ptr<ResultSet> rs = conn->query(sql);
+    data["count"] = rs->size();
+    data["list"] = Json::Value(Json::arrayValue);
+    Result::Ptr ret = nullptr;
+    while ((ret = rs->next())) {
+        Json::Value item;
+        item["_id"] = ret->getValue("id");
+        item["user_id"] = ret->getValue("user_id");
+        item["content"] = ret->getValue("content");
+        item["state"] = ret->getValue("status");
+        item["create_time"] = ret->getValue("created_at");
+        item["update_time"] = ret->getValue("updated_at");
+        item["avatar"] = "user";
+        item["reply_list"] = get_reply_message(ret->getValue("id"), ret->getValue("user_id"));
+        // get user info
+        sql = "select * from user where id = " + ret->getValue("user_id");
+        std::shared_ptr<ResultSet> rs_user = conn->query(sql);
+        if (rs_user->size() > 0) {
+            Result::Ptr res_user = rs_user->next();
+            item["name"] = res_user->getValue("name");
+            item["email"] = res_user->getValue("email");
         }
+        data["list"].append(item);
     }
 
     Json::Value root;
@@ -72,37 +66,30 @@ void GetMessageDetailServlet::doPost(const pico::HttpRequest::Ptr& req,
     std::string message = "success";
     Json::Value data = {};
 
-    auto session = pico::SessionManager::getInstance()->getRequestSession(req, resp);
-    if (!session || !session->has("username")) {
+    std::string sql = "select * from main_comment where id = " + body["id"].asString();
+    std::shared_ptr<ResultSet> rs = conn->query(sql);
+    if (rs->size() <= 0) {
         code = 200;
-        message = "not login";
+        message = "not found";
     }
     else {
-        std::string sql = "select * from main_comment where id = " + body["id"].asString();
-        ResultSet* rs = conn->query(sql);
-        if (rs->size() <= 0) {
-            code = 200;
-            message = "not found";
+        Result::Ptr ret = rs->next();
+        data["_id"] = ret->getValue("id");
+        data["user_id"] = ret->getValue("user_id");
+        data["content"] = ret->getValue("content");
+        data["state"] = ret->getValue("status");
+        data["create_time"] = ret->getValue("created_at");
+        data["update_time"] = ret->getValue("updated_at");
+        data["avatar"] = "user";
+        // get user info
+        sql = "select * from user where id = " + ret->getValue("user_id");
+        std::shared_ptr<ResultSet> rs_user = conn->query(sql);
+        if (rs_user->size() > 0) {
+            Result::Ptr res_user = rs_user->next();
+            data["name"] = res_user->getValue("name");
+            data["email"] = res_user->getValue("email");
         }
-        else {
-            Result* ret = rs->next();
-            data["_id"] = ret->getValue("id");
-            data["user_id"] = ret->getValue("user_id");
-            data["content"] = ret->getValue("content");
-            data["state"] = ret->getValue("status");
-            data["create_time"] = ret->getValue("created_at");
-            data["update_time"] = ret->getValue("updated_at");
-            data["avatar"] = "user";
-            // get user info
-            sql = "select * from user where id = " + ret->getValue("user_id");
-            ResultSet* rs_user = conn->query(sql);
-            if (rs_user->size() > 0) {
-                Result* res_user = rs_user->next();
-                data["name"] = res_user->getValue("name");
-                data["email"] = res_user->getValue("email");
-            }
-            data["reply_list"] = get_reply_message(ret->getValue("id"), ret->getValue("user_id"));
-        }
+        data["reply_list"] = get_reply_message(ret->getValue("id"), ret->getValue("user_id"));
     }
 
     Json::Value root;
@@ -140,13 +127,13 @@ void AddReplyMessageServlet::doPost(const pico::HttpRequest::Ptr& req,
         std::string current_user_id = session->get<std::string>("user_id");
 
         std::string query_sql = "select article_id ,user_id from main_comment where id = " + id;
-        ResultSet* rs = conn->query(query_sql);
+        std::shared_ptr<ResultSet> rs = conn->query(query_sql);
         if (rs->size() == 0) {
             code = 200;
             message = "message not found";
         }
         else {
-            Result* res = rs->next();
+            Result::Ptr res = rs->next();
             std::string article_id = res->getValue("article_id");
             std::string user_id = res->getValue("user_id");
             std::string insert_sql = "insert into reply_comment "
@@ -190,35 +177,29 @@ void DelMessageServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResp
     std::string message = "success";
     Json::Value data = {};
 
-    auto session = pico::SessionManager::getInstance()->getRequestSession(req, resp);
-    if (!session || !session->has("username")) {
+
+    std::string id = body["id"].asString();
+    std::string sql = "select * from main_comment where id = " + id;
+    std::shared_ptr<ResultSet> rs = conn->query(sql);
+    if (rs->size() == 0) {
         code = 200;
-        message = "not login";
+        message = "message not found";
     }
     else {
-        std::string id = body["id"].asString();
-        std::string sql = "select * from main_comment where id = " + id;
-        ResultSet* rs = conn->query(sql);
-        if (rs->size() == 0) {
+        Result::Ptr res = rs->next();
+        std::string user_id = res->getValue("user_id");
+        std::string article_id = res->getValue("article_id");
+        std::string del_sql = "delete from main_comment where id = " + id;
+        if (!conn->update(del_sql)) {
             code = 200;
-            message = "message not found";
+            message = "delete message failed";
         }
         else {
-            Result* res = rs->next();
-            std::string user_id = res->getValue("user_id");
-            std::string article_id = res->getValue("article_id");
-            std::string del_sql = "delete from main_comment where id = " + id;
-            if (!conn->update(del_sql)) {
+            std::string update_sql =
+                "update article set comments = comments - 1 where id = " + article_id;
+            if (!conn->update(update_sql)) {
                 code = 200;
-                message = "delete message failed";
-            }
-            else {
-                std::string update_sql =
-                    "update article set comments = comments - 1 where id = " + article_id;
-                if (!conn->update(update_sql)) {
-                    code = 200;
-                    message = "update article comments failed";
-                }
+                message = "update article comments failed";
             }
         }
     }

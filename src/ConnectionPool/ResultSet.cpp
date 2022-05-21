@@ -12,7 +12,7 @@ Result::Result(MYSQL_RES* result, MYSQL_ROW row) {
 
 Result::Result() {}
 
-bool Result::equals(const Result* r) {
+bool Result::equals(const Result::Ptr r) {
     if (um.size() != r->um.size()) return false;
     std::unordered_map<std::string, std::string>::const_iterator it = um.begin();
     while (it != um.end()) {
@@ -28,7 +28,7 @@ bool Result::equals(const Result* r) {
     return true;
 }
 
-Result::Result(const Result* r) {
+Result::Result(const std::shared_ptr<Result> r) {
     for (std::unordered_map<std::string, std::string>::const_iterator it = r->um.begin();
          it != r->um.end();
          it++) {
@@ -71,10 +71,11 @@ Result::~Result() {
 ResultSet::ResultSet(MYSQL_RES* result) {
     MYSQL_ROW row;
     while ((row = mysql_fetch_row(result))) {
-        Result* r = new Result(result, row);
+        Result::Ptr r = std::make_shared<Result>(result, row);
         v.push_back(r);
     }
     it = v.begin();
+    mysql_free_result(result);
 }
 
 ResultSet::ResultSet() {
@@ -83,11 +84,10 @@ ResultSet::ResultSet() {
 }
 
 ResultSet::~ResultSet() {
-    for (it = v.begin(); it != v.end(); it++) { delete *it; }
     v.clear();
 }
 
-Result* ResultSet::next() {
+Result::Ptr ResultSet::next() {
     if (it == v.end()) { return nullptr; }
     return *it++;
 }
@@ -96,19 +96,18 @@ int ResultSet::size() {
 }
 
 void ResultSet::reset() {
-    for (it = v.begin(); it != v.end(); it++) { delete *it; }
     v.clear();
 }
 
-bool ResultSet::isElement(Result* r) {
+bool ResultSet::isElement(Result::Ptr r) {
     for (it = v.begin(); it != v.end(); it++) {
         if (r->equals(*it)) { return true; }
     }
     return false;
 }
 
-void ResultSet::insert(Result* r) {
-    Result* r2 = new Result(r);
+void ResultSet::insert(Result::Ptr r) {
+    Result::Ptr r2 = std::make_shared<Result>(r);
     v.push_back(r2);
 }
 
@@ -118,7 +117,7 @@ void ResultSet::offset(int start, int cnt) {
     if (start + cnt > (int)v.size()) { cnt = v.size() - start; }
     it = v.begin();
 
-    std::vector<Result*> v2;
+    std::vector<Result::Ptr> v2;
     v2.assign(v.begin() + start, v.begin() + start + cnt);
     v.clear();
     v.assign(v2.begin(), v2.end());
@@ -126,17 +125,18 @@ void ResultSet::offset(int start, int cnt) {
 }
 
 ResultSet::ResultSet(const ResultSet& rs) {
+    v.clear();
     for (it = rs.v.begin(); it != rs.v.end(); it++) {
-        Result* r = new Result(*it);
+        Result::Ptr r = std::make_shared<Result>(*it);
         v.push_back(r);
     }
     it = v.begin();
 }
 
 ResultSet& ResultSet::operator=(const ResultSet& rs) {
-    for (it = v.begin(); it != v.end(); it++) { delete *it; }
+    v.clear();
     for (it = rs.v.begin(); it != rs.v.end(); it++) {
-        Result* r = new Result(*it);
+        Result::Ptr r = std::make_shared<Result>(*it);
         v.push_back(r);
     }
     it = v.begin();

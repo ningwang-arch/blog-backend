@@ -3,6 +3,8 @@
 #include "pico/session.h"
 #include "util.h"
 
+#include <memory>
+
 void ChangeCommentServlet::doPost(const pico::HttpRequest::Ptr& req,
                                   pico::HttpResponse::Ptr& resp) {
     auto conn = get_connection();
@@ -18,19 +20,13 @@ void ChangeCommentServlet::doPost(const pico::HttpRequest::Ptr& req,
     std::string message = "success";
     Json::Value data = {};
 
-    auto session = pico::SessionManager::getInstance()->getRequestSession(req, resp);
-    if (!session || !session->has("username")) {
-        code = 200;
-        message = "not login";
-    }
-    else {
-        std::string id = body["id"].asString();
-        std::string status = body["state"].asString();
-        std::string sql = "update main_comment set status = " + status + " where id = " + id;
-        if (!conn->update(sql)) {
-            code = 500;
-            message = "update failed";
-        }
+
+    std::string id = body["id"].asString();
+    std::string status = body["state"].asString();
+    std::string sql = "update main_comment set status = " + status + " where id = " + id;
+    if (!conn->update(sql)) {
+        code = 500;
+        message = "update failed";
     }
 
     Json::Value resp_json;
@@ -56,43 +52,36 @@ void ChangeThirdCommentServlet::doPost(const pico::HttpRequest::Ptr& req,
     std::string message = "success";
     Json::Value data = {};
 
-    auto session = pico::SessionManager::getInstance()->getRequestSession(req, resp);
-    if (!session || !session->has("username")) {
+    std::string main_comment_id = body["id"].asString();
+    std::string reply_comment_id = body["_id"].asString();
+
+    if (!CheckParameter(main_comment_id) || !CheckParameter(reply_comment_id)) {
         code = 200;
-        message = "not login";
+        message = "invalid request";
     }
     else {
-        std::string main_comment_id = body["id"].asString();
-        std::string reply_comment_id = body["_id"].asString();
+        std::string sql = "select * from reply_comment where id = " + reply_comment_id +
+                          " and main_comment_id = " + main_comment_id;
+        std::shared_ptr<ResultSet> rs = conn->query(sql);
 
-        if (!CheckParameter(main_comment_id) || !CheckParameter(reply_comment_id)) {
+        if (rs->size() == 0) {
             code = 200;
-            message = "invalid request";
+            message = "message not found";
         }
         else {
-            std::string sql = "select * from reply_comment where id = " + reply_comment_id +
-                              " and main_comment_id = " + main_comment_id;
-            ResultSet* rs = conn->query(sql);
-
-            if (rs->size() == 0) {
+            std::string article_id = rs->next()->getValue("article_id");
+            std::string del_sql = "delete from reply_comment where id = " + reply_comment_id +
+                                  " and main_comment_id = " + main_comment_id;
+            if (!conn->update(del_sql)) {
                 code = 200;
-                message = "message not found";
+                message = "delete message failed";
             }
             else {
-                std::string article_id = rs->next()->getValue("article_id");
-                std::string del_sql = "delete from reply_comment where id = " + reply_comment_id +
-                                      " and main_comment_id = " + main_comment_id;
-                if (!conn->update(del_sql)) {
+                std::string update_sql =
+                    "update article set comments = comments - 1 where id = " + article_id;
+                if (!conn->update(update_sql)) {
                     code = 200;
-                    message = "delete message failed";
-                }
-                else {
-                    std::string update_sql =
-                        "update article set comments = comments - 1 where id = " + article_id;
-                    if (!conn->update(update_sql)) {
-                        code = 200;
-                        message = "update article comments failed";
-                    }
+                    message = "update article comments failed";
                 }
             }
         }
@@ -198,8 +187,8 @@ void AddThirdCommentServlet::doPost(const pico::HttpRequest::Ptr& req,
         std::string to_user_name = to_user["name"].asString();
         std::string query_sql =
             "select id from user where name = '" + to_user_name + "' and role = 0";
-        ResultSet* rs = conn->query(query_sql);
-        Result* res = nullptr;
+        std::shared_ptr<ResultSet> rs = conn->query(query_sql);
+        Result::Ptr res = nullptr;
         if ((res = rs->next()) == nullptr) {
             code = 200;
             message = "to_user not found";

@@ -1,0 +1,18 @@
+other:
+  session:
+    timeout: 3600
+  recv:
+    timeout: 3000
+  log:
+    blog:
+      path: /var/log
+      file: /blog.log
+    nginx:
+      path: /var/log/nginx
+  
+  oss:
+    bucket: pico-blog
+    conf: oss.ini
+  mysql:
+    conf: mysql.ini
+

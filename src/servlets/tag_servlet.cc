@@ -30,7 +30,7 @@ void GetTagListServlet::doGet(const pico::HttpRequest::Ptr& req, pico::HttpRespo
         rs->offset((page - 1) * page_size, page_size);
         data["count"] = rs->size();
 
-        Result* ret = nullptr;
+        Result::Ptr ret = nullptr;
         Json::Value ca_list = {};
         while ((ret = rs->next())) {
             Json::Value ca;
@@ -67,24 +67,19 @@ void DelTagServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResponse
     std::string message = "success";
     res->set_status(pico::HttpStatus::OK);
 
-    auto session = pico::SessionManager::getInstance()->getRequestSession(req, res);
-    if (!session || !session->has("username")) {
+
+    if (!CheckParameter(id)) {
         code = 200;
-        message = "not login";
+        message = "invalid id";
     }
     else {
-        if (!CheckParameter(id)) {
+        std::string sql = "delete from tag_category where id = " + id;
+        if (!conn->update(sql)) {
             code = 200;
-            message = "invalid id";
-        }
-        else {
-            std::string sql = "delete from tag_category where id = " + id;
-            if (!conn->update(sql)) {
-                code = 200;
-                message = "database error";
-            }
+            message = "database error";
         }
     }
+
 
     Json::Value json_resp;
     json_resp["code"] = code;
@@ -111,38 +106,31 @@ void AddTagServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResponse
     std::string message = "success";
     res->set_status(pico::HttpStatus::OK);
 
-    auto session = pico::SessionManager::getInstance()->getRequestSession(req, res);
-    if (!session || !session->has("username")) {
+    if (!CheckParameter(name)) {
         code = 200;
-        message = "not login";
+        message = "invalid name";
     }
     else {
-        if (!CheckParameter(name)) {
+        std::string sql = "select * from tag_category where name = '" + name +
+                          "' and t_c = 0 and `desc` = '" + desc + "'";
+        auto rs = conn->query(sql);
+        if (!rs) {
             code = 200;
-            message = "invalid name";
+            message = "database error";
         }
         else {
-            std::string sql = "select * from tag_category where name = '" + name +
-                              "' and t_c = 0 and `desc` = '" + desc + "'";
-            auto rs = conn->query(sql);
-            if (!rs) {
+            if (rs->size() > 0) {
                 code = 200;
-                message = "database error";
+                message = "tag already exists";
             }
             else {
-                if (rs->size() > 0) {
+                std::string sql =
+                    "insert into tag_category (name, `desc`, t_c, created_at) values ('" + name +
+                    "', '" + desc + "', 0, now())";
+                auto rs = conn->query(sql);
+                if (!rs) {
                     code = 200;
-                    message = "tag already exists";
-                }
-                else {
-                    std::string sql =
-                        "insert into tag_category (name, `desc`, t_c, created_at) values ('" +
-                        name + "', '" + desc + "', 0, now())";
-                    auto rs = conn->query(sql);
-                    if (!rs) {
-                        code = 200;
-                        message = "database error";
-                    }
+                    message = "database error";
                 }
             }
         }

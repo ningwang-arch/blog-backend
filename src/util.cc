@@ -162,8 +162,8 @@ Json::Value handle_comments(std::string id) {
 
     std::string sql = "select * from main_comment where article_id = " + id;
 
-    ResultSet* result = conn->query(sql);
-    Result* res = nullptr;
+    std::shared_ptr<ResultSet> result = conn->query(sql);
+    Result::Ptr res = nullptr;
     Json::Value comments = Json::Value(Json::arrayValue);
     while ((res = result->next()) != nullptr) {
         Json::Value comment;
@@ -175,8 +175,8 @@ Json::Value handle_comments(std::string id) {
         // get user info from user by user_id
         std::string user_id = res->getString("user_id");
         sql = "select * from user where id = " + user_id;
-        ResultSet* result_user = conn->query(sql);
-        Result* res_user = nullptr;
+        std::shared_ptr<ResultSet> result_user = conn->query(sql);
+        Result::Ptr res_user = nullptr;
         if ((res_user = result_user->next())) {
             Json::Value user;
             user["name"] = res_user->getString("name");
@@ -199,8 +199,8 @@ Json::Value handle_others(std::string article_id, std::string main_comment_id) {
     // article_id
     std::string sql = "select * from reply_comment where main_comment_id = " + main_comment_id +
                       " and article_id = " + article_id;
-    ResultSet* result = conn->query(sql);
-    Result* res = nullptr;
+    std::shared_ptr<ResultSet> result = conn->query(sql);
+    Result::Ptr res = nullptr;
 
     Json::Value others = Json::Value(Json::arrayValue);
     while ((res = result->next()) != nullptr) {
@@ -212,8 +212,8 @@ Json::Value handle_others(std::string article_id, std::string main_comment_id) {
         std::string from_user_id = res->getString("from_user_id");
         std::string to_user_id = res->getString("to_user_id");
         sql = "select * from user where id = " + from_user_id;
-        ResultSet* result_from = conn->query(sql);
-        Result* res_from = nullptr;
+        std::shared_ptr<ResultSet> result_from = conn->query(sql);
+        Result::Ptr res_from = nullptr;
         if ((res_from = result_from->next())) {
             Json::Value from;
             from["user_id"] = res_from->getString("id");
@@ -223,8 +223,8 @@ Json::Value handle_others(std::string article_id, std::string main_comment_id) {
             other["user"] = from;
         }
         sql = "select * from user where id = " + to_user_id;
-        ResultSet* result_to = conn->query(sql);
-        Result* res_to = nullptr;
+        std::shared_ptr<ResultSet> result_to = conn->query(sql);
+        Result::Ptr res_to = nullptr;
         if ((res_to = result_to->next())) {
             Json::Value to;
             to["user_id"] = res_to->getString("id");
@@ -246,8 +246,8 @@ Json::Value get_reply_message(std::string main_comment_id, std::string user_id) 
     Json::Value reply_message = Json::Value(Json::arrayValue);
     std::string sql = "select * from reply_comment where main_comment_id = " + main_comment_id +
                       " and to_user_id = " + user_id;
-    ResultSet* result = conn->query(sql);
-    Result* res = nullptr;
+    std::shared_ptr<ResultSet> result = conn->query(sql);
+    Result::Ptr res = nullptr;
 
     while ((res = result->next()) != nullptr) {
         Json::Value message;
@@ -272,8 +272,8 @@ std::string get_user_id(std::string email, std::string username) {
 
     std::string sql = "select * from user where email = '" + email + "' and name = '" + username +
                       "' and role = 0";
-    ResultSet* result = conn->query(sql);
-    Result* res = nullptr;
+    std::shared_ptr<ResultSet> result = conn->query(sql);
+    Result::Ptr res = nullptr;
     if ((res = result->next())) { return res->getString("id"); }
 
 
@@ -316,6 +316,6 @@ std::string url_decode(std::string str) {
 }
 
 std::shared_ptr<Connection> get_connection() {
-    ConnectionPool* pool = ConnectionPool::getConnectionPool();
+    static ConnectionPool* pool = ConnectionPool::getConnectionPool();
     return pool->getConnection();
 }

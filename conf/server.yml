@@ -1,0 +1,38 @@
+servers:
+  - addresses: ["127.0.0.1:8080"]
+    type: http
+    ssl: false
+    name: server
+    worker: worker
+    keep_alive: false
+    acceptor: acceptor
+    servlets:
+      - root
+      - login
+      - user
+      - log
+      - "category-list"
+      - "category-add"
+      - "category-del"
+      - "tag-list"
+      - "tag-add"
+      - "tag-del"
+      - "project-list"
+      - "project-add"
+      - "project-del"
+      - "project-update"
+      - "project-detail"
+      - "article-list"
+      - "article-list-admin"
+      - "article-add"
+      - "article-del"
+      - "article-update"
+      - "article-detail"
+      - "change-comment"
+      - "change-third-comment"
+      - "comment-add"
+      - "add-third-comment"
+      - "message-list"
+      - "message-add"
+      - "message-del"
+      - "message-detail"

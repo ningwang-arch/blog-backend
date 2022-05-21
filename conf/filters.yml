@@ -1,0 +1,34 @@
+filters:
+  - name: "filter-session"
+    class: SessionFilter
+    description: "Check session"
+    path:
+      # Tag
+      - /delTag
+      - /addTag
+      # Category
+      - /delCategory
+      - /addCategory
+      # Project
+      - /delProject
+      - /addProject
+      - /updateProject
+      - /getProjectDetail
+      # Article
+      - /delArticle
+      - /addArticle
+      - /updateArticle
+      - /getArticleListAdmin
+      # Message
+      - /delMessage
+      - /addReplyMessage
+      - /getMessageDetail
+      - /getMessageList
+      # Comment
+      - /changeComment
+      - /changeThirdComment
+  - name: "filter-param"
+    path:
+      - /*
+    class: ParamsFilter
+    description: "Check params"

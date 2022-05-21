@@ -32,7 +32,7 @@ void GetProjectListServlet::doGet(const pico::HttpRequest::Ptr& req, pico::HttpR
         rs->offset((page - 1) * page_size, page_size);
         data["count"] = rs->size();
 
-        Result* ret = nullptr;
+        Result::Ptr ret = nullptr;
         Json::Value ca_list = {};
         while ((ret = rs->next())) {
             Json::Value item = {};
@@ -73,24 +73,19 @@ void DelProjectServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResp
     std::string message = "success";
     res->set_status(pico::HttpStatus::OK);
 
-    auto session = pico::SessionManager::getInstance()->getRequestSession(req, res);
-    if (!session || !session->has("username")) {
+
+    if (!CheckParameter(id)) {
         code = 200;
-        message = "not login";
+        message = "invalid parameter";
     }
     else {
-        if (!CheckParameter(id)) {
+        std::string sql = "delete from project where id = " + id;
+        if (!conn->update(sql)) {
             code = 200;
-            message = "invalid parameter";
-        }
-        else {
-            std::string sql = "delete from project where id = " + id;
-            if (!conn->update(sql)) {
-                code = 200;
-                message = "database error";
-            }
+            message = "database error";
         }
     }
+
 
     Json::Value json_resp;
     json_resp["code"] = code;
@@ -122,26 +117,20 @@ void AddProjectServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResp
     std::string message = "success";
     res->set_status(pico::HttpStatus::OK);
 
-    auto session = pico::SessionManager::getInstance()->getRequestSession(req, res);
-    if (!session || !session->has("username")) {
+
+    if (!CheckParameter(title) || !CheckParameter(description) || !CheckParameter(img) ||
+        !CheckParameter(url) || !CheckParameter(start_time) || !CheckParameter(end_time)) {
         code = 200;
-        message = "not login";
+        message = "invalid parameter";
     }
     else {
-        if (!CheckParameter(title) || !CheckParameter(description) || !CheckParameter(img) ||
-            !CheckParameter(url) || !CheckParameter(start_time) || !CheckParameter(end_time)) {
+        std::string sql = "insert into project(title, description, img, url, created_at, "
+                          "end_at, status) values('" +
+                          title + "', '" + description + "', '" + img + "', '" + url + "', '" +
+                          start_time + "', '" + end_time + "', " + state + ")";
+        if (!conn->update(sql)) {
             code = 200;
-            message = "invalid parameter";
-        }
-        else {
-            std::string sql = "insert into project(title, description, img, url, created_at, "
-                              "end_at, status) values('" +
-                              title + "', '" + description + "', '" + img + "', '" + url + "', '" +
-                              start_time + "', '" + end_time + "', " + state + ")";
-            if (!conn->update(sql)) {
-                code = 200;
-                message = "database error";
-            }
+            message = "database error";
         }
     }
 
@@ -173,39 +162,33 @@ void GetProjectDetailServlet::doPost(const pico::HttpRequest::Ptr& req,
 
     Json::Value data = {};
 
-    auto session = pico::SessionManager::getInstance()->getRequestSession(req, res);
-    if (!session || !session->has("username")) {
+
+    if (!CheckParameter(id)) {
         code = 200;
-        message = "not login";
+        message = "invalid parameter";
     }
     else {
-        if (!CheckParameter(id)) {
+        std::string sql = "select * from project where id = " + id;
+        auto rs = conn->query(sql);
+        if (!rs) {
             code = 200;
-            message = "invalid parameter";
+            message = "database error";
+        }
+        else if (rs->size() == 0) {
+            code = 200;
+            message = "not found";
         }
         else {
-            std::string sql = "select * from project where id = " + id;
-            auto rs = conn->query(sql);
-            if (!rs) {
-                code = 200;
-                message = "database error";
-            }
-            else if (rs->size() == 0) {
-                code = 200;
-                message = "not found";
-            }
-            else {
-                Result* ret = nullptr;
-                if ((ret = rs->next())) {
-                    data["_id"] = ret->getValue("id");
-                    data["title"] = ret->getValue("title");
-                    data["start_time"] = ret->getValue("created_at");
-                    data["end_time"] = ret->getValue("end_at");
-                    data["content"] = ret->getValue("description");
-                    data["img"] = ret->getValue("img");
-                    data["url"] = ret->getValue("url");
-                    data["state"] = ret->getValue("status");
-                }
+            Result::Ptr ret = nullptr;
+            if ((ret = rs->next())) {
+                data["_id"] = ret->getValue("id");
+                data["title"] = ret->getValue("title");
+                data["start_time"] = ret->getValue("created_at");
+                data["end_time"] = ret->getValue("end_at");
+                data["content"] = ret->getValue("description");
+                data["img"] = ret->getValue("img");
+                data["url"] = ret->getValue("url");
+                data["state"] = ret->getValue("status");
             }
         }
     }
@@ -241,36 +224,30 @@ void UpdateProjectServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpR
     std::string message = "success";
     res->set_status(pico::HttpStatus::OK);
 
-    auto session = pico::SessionManager::getInstance()->getRequestSession(req, res);
-    if (!session || !session->has("username")) {
+
+    if (!CheckParameter(id) || !CheckParameter(state) || !CheckParameter(title) ||
+        !CheckParameter(description) || !CheckParameter(img) || !CheckParameter(url) ||
+        !CheckParameter(start_time) || !CheckParameter(end_time)) {
         code = 200;
-        message = "not login";
+        message = "invalid parameter";
     }
     else {
-        if (!CheckParameter(id) || !CheckParameter(state) || !CheckParameter(title) ||
-            !CheckParameter(description) || !CheckParameter(img) || !CheckParameter(url) ||
-            !CheckParameter(start_time) || !CheckParameter(end_time)) {
+        std::string sql = "select * from project where id = " + id;
+        std::shared_ptr<ResultSet> rs = conn->query(sql);
+        if (rs->size() == 0) {
             code = 200;
-            message = "invalid parameter";
+            message = "project not exist";
         }
         else {
-            std::string sql = "select * from project where id = " + id;
-            ResultSet* rs = conn->query(sql);
-            if (rs->size() == 0) {
+            std::string sql = "update project set title = '" + title + "', description = '" +
+                              description + "', img = '" + img + "', url = '" + url +
+                              "', "
+                              "created_at = '" +
+                              start_time + "', end_at = '" + end_time + "', status = " + state +
+                              " where id = " + id;
+            if (!conn->update(sql)) {
                 code = 200;
-                message = "project not exist";
-            }
-            else {
-                std::string sql = "update project set title = '" + title + "', description = '" +
-                                  description + "', img = '" + img + "', url = '" + url +
-                                  "', "
-                                  "created_at = '" +
-                                  start_time + "', end_at = '" + end_time + "', status = " + state +
-                                  " where id = " + id;
-                if (!conn->update(sql)) {
-                    code = 200;
-                    message = "database error";
-                }
+                message = "database error";
             }
         }
     }

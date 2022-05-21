@@ -6,8 +6,6 @@
 #include "pico/pico.h"
 #include "src/util.h"
 
-#include "pico/macro.h"
-
 OSSClient::OSSClient(const std::string& bucketName, const std::string& config_file) {
     m_accessId = "";
     m_accessKey = "";
@@ -18,13 +16,12 @@ OSSClient::OSSClient(const std::string& bucketName, const std::string& config_fi
     std::string cf;
 
     if (config_file.empty()) {   // use default config file
-        cf = "oss.ini";
+        cf = "./conf/oss.ini";
     }
     else {
         cf = config_file;
     }
 
-    cf = CONF_DIR + cf;
 
     if (!init(cf)) {
         LOG_ERROR("OSSClient init failed");
