@@ -2,7 +2,6 @@
 #include <string>
 
 #include "pico/pico.h"
-#include "src/http_server/http_server.hpp"
 
 using request = pico::HttpRequest::Ptr;
 using response = pico::HttpResponse::Ptr;
@@ -29,8 +28,6 @@ int main(int argc, char const* argv[]) {
 
     //     server->start();
     // });
-    HttpServer server("0.0.0.0:8080");
 
-    server.start();
     return 0;
 }
