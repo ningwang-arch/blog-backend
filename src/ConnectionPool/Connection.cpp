@@ -7,6 +7,8 @@
 #include <mysql/mysql.h>
 #include <string>
 
+#include "pico/hook.h"
+
 namespace {
 struct MySQLThreadIniter
 {
@@ -72,130 +74,34 @@ bool Connection::ping() {
     return true;
 }
 
+
 bool Connection::update(std::string sql) {
     std::lock_guard<std::mutex> lock(_mutex);
+    bool is_hook = pico::is_hook_enable();
+    if (is_hook) { pico::set_hook_enable(false); }
     if (::mysql_real_query(_conn.get(), sql.c_str(), (unsigned long)strlen(sql.c_str()))) {
         LOG_ERROR("update failed, mysql_error: %s", mysql_error(_conn.get()));
+        if (is_hook) { pico::set_hook_enable(true); }
         return false;
     }
+    if (is_hook) { pico::set_hook_enable(true); }
     return true;
 }
 
 std::shared_ptr<ResultSet> Connection::query(std::string sql) {
     std::lock_guard<std::mutex> lock(_mutex);
+    bool is_hook = pico::is_hook_enable();
+    if (is_hook) { pico::set_hook_enable(false); }
     if (::mysql_real_query(_conn.get(), sql.c_str(), (unsigned long)strlen(sql.c_str()))) {
         LOG_ERROR("query failed, mysql_error: %s", mysql_error(_conn.get()));
+        if (is_hook) { pico::set_hook_enable(true); }
         return std::make_shared<ResultSet>();
     }
+    if (is_hook) { pico::set_hook_enable(true); }
     MYSQL_RES* result = mysql_store_result(_conn.get());
     return std::make_shared<ResultSet>(result);
 }
 
-
-// std::shared_ptr<MYSQL_STMT> Connection::prepare(std::string sql) {
-//     std::lock_guard<std::mutex> lock(_mutex);
-//     MYSQL_STMT* stmt = mysql_stmt_init(_conn.get());
-//     if (stmt == nullptr) {
-//         LOG_ERROR("mysql_stmt_init failed: %s", mysql_error(_conn.get()));
-//         return nullptr;
-//     }
-//     if (::mysql_stmt_prepare(stmt, sql.c_str(), (unsigned long)strlen(sql.c_str()))) {
-//         LOG_ERROR("mysql_stmt_prepare failed: %s", mysql_stmt_error(stmt));
-//         mysql_stmt_close(stmt);
-//         return nullptr;
-//     }
-//     return std::make_shared<MYSQL_STMT>(stmt);
-// }
-
-// bool Connection::bindParam(std::shared_ptr<MYSQL_STMT> stmt, int index, int value) {
-//     std::lock_guard<std::mutex> lock(_mutex);
-//     MYSQL_BIND bind;
-//     memset(&bind, 0, sizeof(bind));
-//     bind.buffer_type = MYSQL_TYPE_LONG;
-//     bind.buffer = (char*)&value;
-//     bind.buffer_length = sizeof(value);
-//     if (::mysql_stmt_bind_param(stmt.get(), &bind)) {
-//         LOG_ERROR("mysql_stmt_bind_param failed: %s", mysql_stmt_error(stmt.get()));
-//         return false;
-//     }
-//     return true;
-// }
-
-// bool Connection::bindParam(std::shared_ptr<MYSQL_STMT> stmt, int index, std::string value) {
-//     std::lock_guard<std::mutex> lock(_mutex);
-//     MYSQL_BIND bind;
-//     memset(&bind, 0, sizeof(bind));
-//     bind.buffer_type = MYSQL_TYPE_STRING;
-//     bind.buffer = (char*)value.c_str();
-//     bind.buffer_length = (unsigned long)value.length();
-//     if (::mysql_stmt_bind_param(stmt.get(), &bind)) {
-//         LOG_ERROR("mysql_stmt_bind_param failed: %s", mysql_stmt_error(stmt.get()));
-//         return false;
-//     }
-//     return true;
-// }
-
-// bool Connection::bindParam(std::shared_ptr<MYSQL_STMT> stmt, int index, double value) {
-//     std::lock_guard<std::mutex> lock(_mutex);
-//     MYSQL_BIND bind;
-//     memset(&bind, 0, sizeof(bind));
-//     bind.buffer_type = MYSQL_TYPE_DOUBLE;
-//     bind.buffer = (char*)&value;
-//     bind.buffer_length = sizeof(value);
-//     if (::mysql_stmt_bind_param(stmt.get(), &bind)) {
-//         LOG_ERROR("mysql_stmt_bind_param failed: %s", mysql_stmt_error(stmt.get()));
-//         return false;
-//     }
-//     return true;
-// }
-
-// bool Connection::bindParam(std::shared_ptr<MYSQL_STMT> stmt, int index, std::tm value) {
-//     std::lock_guard<std::mutex> lock(_mutex);
-//     MYSQL_BIND bind;
-//     memset(&bind, 0, sizeof(bind));
-//     bind.buffer_type = MYSQL_TYPE_DATETIME;
-//     bind.buffer = (char*)&value;
-//     bind.buffer_length = sizeof(value);
-//     if (::mysql_stmt_bind_param(stmt.get(), &bind)) {
-//         LOG_ERROR("mysql_stmt_bind_param failed: %s", mysql_stmt_error(stmt.get()));
-//         return false;
-//     }
-//     return true;
-// }
-
-// bool Connection::bindParam(std::shared_ptr<MYSQL_STMT> stmt, int index, std::string value,
-//                            int length) {
-//     std::lock_guard<std::mutex> lock(_mutex);
-//     MYSQL_BIND bind;
-//     memset(&bind, 0, sizeof(bind));
-//     bind.buffer_type = MYSQL_TYPE_STRING;
-//     bind.buffer = (char*)value.c_str();
-//     bind.buffer_length = length;
-//     if (::mysql_stmt_bind_param(stmt.get(), &bind)) {
-//         LOG_ERROR("mysql_stmt_bind_param failed: %s", mysql_stmt_error(stmt.get()));
-//         return false;
-//     }
-//     return true;
-// }
-
-// bool Connection::executeUpdate(std::shared_ptr<MYSQL_STMT> stmt) {
-//     std::lock_guard<std::mutex> lock(_mutex);
-//     if (::mysql_stmt_execute(stmt.get())) {
-//         LOG_ERROR("mysql_stmt_execute failed: %s", mysql_stmt_error(stmt.get()));
-//         return false;
-//     }
-//     return true;
-// }
-
-// std::shared_ptr<ResultSet> Connection::executeQuery(std::shared_ptr<MYSQL_STMT> stmt) {
-//     std::lock_guard<std::mutex> lock(_mutex);
-//     if (::mysql_stmt_execute(stmt.get())) {
-//         LOG_ERROR("mysql_stmt_execute failed: %s", mysql_stmt_error(stmt.get()));
-//         return std::make_shared<ResultSet>();
-//     }
-//     MYSQL_RES* result = mysql_stmt_result_metadata(stmt.get());
-//     return std::make_shared<ResultSet>(result);
-// }
 
 void Connection::refreshAliveTime() {
     _alivetime = clock();

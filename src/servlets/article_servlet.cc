@@ -14,11 +14,11 @@ static pico::ConfigVar<std::string>::Ptr g_oss_bucket =
 static pico::ConfigVar<std::string>::Ptr g_oss_conf =
     pico::Config::Lookup<std::string>("other.oss.conf", std::string(), "oss conf file");
 
-static std::string conf_dir = [] {
+auto get_conf_dir = [] {
     std::string conf_dir = pico::EnvManager::getInstance()->getConfigPath();
     if (conf_dir[conf_dir.size() - 1] != '/') { conf_dir += "/"; }
     return conf_dir;
-}();
+};
 
 void GetArticleListAdminServlet::doGet(const pico::HttpRequest::Ptr& req,
                                        pico::HttpResponse::Ptr& res) {
@@ -156,7 +156,7 @@ void AddArticleServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResp
     }
     else {
 
-        OSSClient client(g_oss_bucket->getValue(), conf_dir + g_oss_conf->getValue());
+        OSSClient client(g_oss_bucket->getValue(), get_conf_dir() + g_oss_conf->getValue());
         if (!client.upload_data(filename, content)) {
             code = 200;
             message = "upload file failed";
@@ -214,7 +214,7 @@ void GetArticleDetailServlet::doPost(const pico::HttpRequest::Ptr& req,
         else {
             Result::Ptr ret = rs->next();
             std::string filename = ret->getValue("content");
-            OSSClient client(g_oss_bucket->getValue(), conf_dir + g_oss_conf->getValue());
+            OSSClient client(g_oss_bucket->getValue(), get_conf_dir() + g_oss_conf->getValue());
             std::string content;
             if (!client.download_data(filename, content)) {
                 code = 200;
@@ -333,7 +333,7 @@ void UpdateArticleServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpR
         else {
             Result::Ptr ret = rs->next();
             std::string filename = ret->getValue("content");
-            OSSClient client(g_oss_bucket->getValue(), conf_dir + g_oss_conf->getValue());
+            OSSClient client(g_oss_bucket->getValue(), get_conf_dir() + g_oss_conf->getValue());
             if (!client.delete_file(filename)) {
                 code = 200;
                 message = "delete file failed";
@@ -416,7 +416,7 @@ void DelArticleServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResp
             Result::Ptr ret = rs->next();
             std::string filename = ret->getValue("content");
 
-            OSSClient client(g_oss_bucket->getValue(), conf_dir + g_oss_conf->getValue());
+            OSSClient client(g_oss_bucket->getValue(), get_conf_dir() + g_oss_conf->getValue());
             if (!client.delete_file(filename)) {
                 code = 200;
                 message = "delete file failed";

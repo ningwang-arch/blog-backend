@@ -32,19 +32,6 @@ public:
 
     void refreshAliveTime();
 
-    // // prepare statement
-    // std::shared_ptr<MYSQL_STMT> prepare(std::string sql);
-    // // bind parameter
-    // bool bindParam(std::shared_ptr<MYSQL_STMT> stmt, int index, int value);
-    // bool bindParam(std::shared_ptr<MYSQL_STMT> stmt, int index, std::string value);
-    // bool bindParam(std::shared_ptr<MYSQL_STMT> stmt, int index, double value);
-    // bool bindParam(std::shared_ptr<MYSQL_STMT> stmt, int index, std::tm value);
-    // bool bindParam(std::shared_ptr<MYSQL_STMT> stmt, int index, std::string value, int length);
-
-    // // execute statement
-    // bool executeUpdate(std::shared_ptr<MYSQL_STMT> stmt);
-    // std::shared_ptr<ResultSet> executeQuery(std::shared_ptr<MYSQL_STMT> stmt);
-
 
     clock_t getAliveTime();
 
