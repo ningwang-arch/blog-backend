@@ -9,10 +9,6 @@ other:
       file: /blog.log
     nginx:
       path: /var/log/nginx
-  
   oss:
     bucket: pico-blog
     conf: oss.ini
-  mysql:
-    conf: mysql.ini
-

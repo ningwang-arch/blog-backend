@@ -1,18 +1,23 @@
 #include "tag_servlet.h"
 
+#include "../tables.hpp"
 #include "pico/session.h"
 #include "util.h"
 
 void GetTagListServlet::doGet(const pico::HttpRequest::Ptr& req, pico::HttpResponse::Ptr& res) {
-    auto conn = get_connection();
-
     std::string keyword = req->get_param("keyword");
     int page = req->get_param("pageNum").empty() ? 1 : std::stoi(req->get_param("pageNum"));
     int page_size = req->get_param("pageSize").empty() ? 10 : std::stoi(req->get_param("pageSize"));
 
-    if (!CheckParameter(keyword)) { keyword = ""; }
 
-    std::string sql = "select * from tag_category where name like '%" + keyword + "%' and t_c =0";
+    pico::RowBoundsMapper<tag_category> mapper("sql_1");
+    pico::Base<tag_category> base;
+    auto criteria = base.createCriteria();
+    criteria->andEqualTo(&tag_category::t_c, 0);
+    if (!keyword.empty()) { criteria->andLike(&tag_category::name, "%" + keyword + "%"); }
+
+    pico::RowBounds row_bounds((page - 1) * page_size, page_size);
+    auto ret = mapper.selectByRowBounds(base, row_bounds);
 
     int code = 0;
     std::string message = "success";
@@ -20,27 +25,15 @@ void GetTagListServlet::doGet(const pico::HttpRequest::Ptr& req, pico::HttpRespo
 
     Json::Value data = {};
 
-    auto rs = conn->query(sql);
-
-    if (!rs) {
-        code = 200;
-        message = "database error";
-    }
-    else {
-        rs->offset((page - 1) * page_size, page_size);
-        data["count"] = rs->size();
-
-        Result::Ptr ret = nullptr;
-        Json::Value ca_list = {};
-        while ((ret = rs->next())) {
-            Json::Value ca;
-            ca["_id"] = ret->getValue("id");
-            ca["name"] = ret->getValue("name");
-            ca["desc"] = ret->getValue("desc");
-            ca["create_time"] = ret->getValue("created_at");
-            ca_list.append(ca);
-        }
-        data["list"] = ca_list;
+    data["count"] = ret.size();
+    data["list"] = Json::Value(Json::arrayValue);
+    for (auto& item : ret) {
+        Json::Value item_data = {};
+        item_data["_id"] = item.id;
+        item_data["name"] = item.name;
+        item_data["desc"] = item.desc;
+        item_data["create_time"] = pico::Time2Str(item.created_at);
+        data["list"].append(item_data);
     }
 
     Json::Value json_resp;
@@ -52,7 +45,6 @@ void GetTagListServlet::doGet(const pico::HttpRequest::Ptr& req, pico::HttpRespo
 }
 
 void DelTagServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResponse::Ptr& res) {
-    auto conn = get_connection();
     std::string body = req->get_body();
     Json::Value json_req;
     if (!strToJson(body, json_req)) {
@@ -61,23 +53,18 @@ void DelTagServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResponse
         return;
     }
 
-    std::string id = json_req["id"].asString();
+    std::string id = json_req.get("id", "").asString();
 
     int code = 0;
     std::string message = "success";
     res->set_status(pico::HttpStatus::OK);
 
-
-    if (!CheckParameter(id)) {
+    pico::Mapper<tag_category> mapper;
+    mapper.use("sql_1");
+    auto ret = mapper.deleteByPrimaryKey(id);
+    if (!ret) {
         code = 200;
-        message = "invalid id";
-    }
-    else {
-        std::string sql = "delete from tag_category where id = " + id;
-        if (!conn->update(sql)) {
-            code = 200;
-            message = "database error";
-        }
+        message = "delete failed";
     }
 
 
@@ -90,48 +77,45 @@ void DelTagServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResponse
 }
 
 void AddTagServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResponse::Ptr& res) {
-    auto conn = get_connection();
     std::string body = req->get_body();
-    Json::Value json_req;
-    if (!strToJson(body, json_req)) {
+    Json::Value json;
+    if (!strToJson(body, json)) {
         res->set_status(pico::HttpStatus::BAD_REQUEST);
-        res->set_body("invalid request");
+        res->set_body("Bad Request");
         return;
     }
 
-    std::string name = json_req["name"].asString();
-    std::string desc = json_req["desc"].asString();
+    std::string name = json.get("name", "").asString();
+    std::string desc = json.get("desc", "").asString();
 
     int code = 0;
     std::string message = "success";
     res->set_status(pico::HttpStatus::OK);
 
-    if (!CheckParameter(name)) {
+
+    if (name.empty() || desc.empty()) {
         code = 200;
-        message = "invalid name";
+        message = "invalid name or desc";
     }
     else {
-        std::string sql = "select * from tag_category where name = '" + name +
-                          "' and t_c = 0 and `desc` = '" + desc + "'";
-        auto rs = conn->query(sql);
-        if (!rs) {
+        pico::Mapper<tag_category> mapper;
+        mapper.use("sql_1");
+        // select
+        pico::Base<tag_category> base;
+        auto criteria = base.createCriteria();
+        criteria->andEqualTo(&tag_category::name, name)
+            ->andEqualTo(&tag_category::desc, desc)
+            ->andEqualTo(&tag_category::t_c, 0);
+        auto ret = mapper.select(base);
+        if (ret.size() > 0) {
             code = 200;
-            message = "database error";
+            message = "tag already exists";
         }
         else {
-            if (rs->size() > 0) {
+            auto ret = mapper.insert(tag_category{name, desc, time(nullptr), time(nullptr), 0});
+            if (!ret) {
                 code = 200;
-                message = "tag already exists";
-            }
-            else {
-                std::string sql =
-                    "insert into tag_category (name, `desc`, t_c, created_at) values ('" + name +
-                    "', '" + desc + "', 0, now())";
-                auto rs = conn->query(sql);
-                if (!rs) {
-                    code = 200;
-                    message = "database error";
-                }
+                message = "insert failed";
             }
         }
     }

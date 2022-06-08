@@ -1,53 +1,47 @@
 #include "project_servlet.h"
 
+#include "../tables.hpp"
 #include "pico/session.h"
+#include "pico/util.h"
 #include "util.h"
 
 void GetProjectListServlet::doGet(const pico::HttpRequest::Ptr& req, pico::HttpResponse::Ptr& res) {
-    auto conn = get_connection();
-
     std::string keyword = req->get_param("keyword");
     int page = req->get_param("pageNum").empty() ? 1 : std::stoi(req->get_param("pageNum"));
     int page_size = req->get_param("pageSize").empty() ? 10 : std::stoi(req->get_param("pageSize"));
     std::string state = req->get_param("state");
 
-    std::string sql;
-    if (state.empty()) { sql = "select * from project where title like '%" + keyword + "%'"; }
-    else {
-        sql = "select * from project where title like '%" + keyword + "%' and status = " + state;
-    }
+    pico::RowBoundsMapper<project> mapper("sql_1");
+    pico::Base<project> base;
+    auto criteria = base.createCriteria();
+    criteria->andLike(&project::title, "%" + keyword + "%");
+    if (!state.empty()) { criteria->andEqualTo(&project::status, state); }
+
+    pico::RowBounds row_bounds((page - 1) * page_size, page_size);
+    auto ret = mapper.selectByRowBounds(base, row_bounds);
+
 
     int code = 0;
     std::string message = "success";
     res->set_status(pico::HttpStatus::OK);
 
     Json::Value data = {};
+    data["list"] = Json::Value(Json::arrayValue);
 
-    auto rs = conn->query(sql);
-    if (!rs) {
-        code = 200;
-        message = "database error";
+    data["count"] = ret.size();
+    for (auto& item : ret) {
+        Json::Value item_data = {};
+        item_data["_id"] = item.id;
+        item_data["title"] = item.title;
+        item_data["start_time"] = pico::Time2Str(item.created_at);
+        item_data["end_time"] = pico::Time2Str(item.end_at);
+        item_data["content"] = item.description;
+        item_data["img"] = item.img;
+        item_data["url"] = item.url;
+        item_data["state"] = item.status;
+        data["list"].append(item_data);
     }
-    else {
-        rs->offset((page - 1) * page_size, page_size);
-        data["count"] = rs->size();
 
-        Result::Ptr ret = nullptr;
-        Json::Value ca_list = {};
-        while ((ret = rs->next())) {
-            Json::Value item = {};
-            item["_id"] = ret->getValue("id");
-            item["title"] = ret->getValue("title");
-            item["start_time"] = ret->getValue("created_at");
-            item["end_time"] = ret->getValue("end_at");
-            item["content"] = ret->getValue("description");
-            item["img"] = ret->getValue("img");
-            item["url"] = ret->getValue("url");
-            item["state"] = ret->getValue("status");
-            ca_list.append(item);
-        }
-        data["list"] = ca_list;
-    }
 
     Json::Value json_resp;
     json_resp["code"] = code;
@@ -58,7 +52,6 @@ void GetProjectListServlet::doGet(const pico::HttpRequest::Ptr& req, pico::HttpR
 }
 
 void DelProjectServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResponse::Ptr& res) {
-    auto conn = get_connection();
     std::string body = req->get_body();
     Json::Value json_req;
     if (!strToJson(body, json_req)) {
@@ -67,25 +60,25 @@ void DelProjectServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResp
         return;
     }
 
-    std::string id = json_req["id"].asString();
+    std::string id = json_req.get("id", "").asString();
 
     int code = 0;
     std::string message = "success";
     res->set_status(pico::HttpStatus::OK);
 
-
-    if (!CheckParameter(id)) {
+    if (id.empty()) {
         code = 200;
         message = "invalid parameter";
     }
     else {
-        std::string sql = "delete from project where id = " + id;
-        if (!conn->update(sql)) {
+        pico::Mapper<project> mapper;
+        mapper.use("sql_1");
+        auto ret = mapper.deleteByPrimaryKey(id);
+        if (!ret) {
             code = 200;
-            message = "database error";
+            message = "delete failed";
         }
     }
-
 
     Json::Value json_resp;
     json_resp["code"] = code;
@@ -96,7 +89,6 @@ void DelProjectServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResp
 }
 
 void AddProjectServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResponse::Ptr& res) {
-    auto conn = get_connection();
     std::string body = req->get_body();
     Json::Value json;
     if (!strToJson(body, json)) {
@@ -105,7 +97,7 @@ void AddProjectServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResp
         return;
     }
 
-    std::string state = json.get("state", "").asString();
+    int state = std::stoi(json.get("state", "3").asString());
     std::string title = json.get("title", "").asString();
     std::string description = json.get("content", "").asString();
     std::string img = json.get("img", "").asString();
@@ -117,21 +109,22 @@ void AddProjectServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResp
     std::string message = "success";
     res->set_status(pico::HttpStatus::OK);
 
+    pico::Mapper<project> mapper;
+    mapper.use("sql_1");
 
-    if (!CheckParameter(title) || !CheckParameter(description) || !CheckParameter(img) ||
-        !CheckParameter(url) || !CheckParameter(start_time) || !CheckParameter(end_time)) {
+    project item(title,
+                 description,
+                 img,
+                 url,
+                 pico::Str2Time(start_time.data()),
+                 time(0),
+                 pico::Str2Time(end_time.data()),
+                 state);
+
+    auto ret = mapper.insert(item);
+    if (!ret) {
         code = 200;
-        message = "invalid parameter";
-    }
-    else {
-        std::string sql = "insert into project(title, description, img, url, created_at, "
-                          "end_at, status) values('" +
-                          title + "', '" + description + "', '" + img + "', '" + url + "', '" +
-                          start_time + "', '" + end_time + "', " + state + ")";
-        if (!conn->update(sql)) {
-            code = 200;
-            message = "database error";
-        }
+        message = "insert failed";
     }
 
     Json::Value json_resp;
@@ -144,8 +137,6 @@ void AddProjectServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResp
 
 void GetProjectDetailServlet::doPost(const pico::HttpRequest::Ptr& req,
                                      pico::HttpResponse::Ptr& res) {
-    auto conn = get_connection();
-
     std::string body = req->get_body();
     Json::Value json;
     if (!strToJson(body, json)) {
@@ -154,7 +145,7 @@ void GetProjectDetailServlet::doPost(const pico::HttpRequest::Ptr& req,
         return;
     }
 
-    std::string id = json["id"].asString();
+    std::string id = json.get("id", "").asString();
 
     int code = 0;
     std::string message = "success";
@@ -162,34 +153,23 @@ void GetProjectDetailServlet::doPost(const pico::HttpRequest::Ptr& req,
 
     Json::Value data = {};
 
-
-    if (!CheckParameter(id)) {
+    if (id.empty()) {
         code = 200;
         message = "invalid parameter";
     }
     else {
-        std::string sql = "select * from project where id = " + id;
-        auto rs = conn->query(sql);
-        if (!rs) {
-            code = 200;
-            message = "database error";
-        }
-        else if (rs->size() == 0) {
-            code = 200;
-            message = "not found";
-        }
-        else {
-            Result::Ptr ret = nullptr;
-            if ((ret = rs->next())) {
-                data["_id"] = ret->getValue("id");
-                data["title"] = ret->getValue("title");
-                data["start_time"] = ret->getValue("created_at");
-                data["end_time"] = ret->getValue("end_at");
-                data["content"] = ret->getValue("description");
-                data["img"] = ret->getValue("img");
-                data["url"] = ret->getValue("url");
-                data["state"] = ret->getValue("status");
-            }
+        pico::Mapper<project> mapper;
+        mapper.use("sql_1");
+        if (mapper.existsWithPrimaryKey(id)) {
+            auto ret = mapper.selectByPrimaryKey(id);
+            data["_id"] = ret.id;
+            data["title"] = ret.title;
+            data["start_time"] = pico::Time2Str(ret.created_at);
+            data["end_time"] = pico::Time2Str(ret.end_at);
+            data["content"] = ret.description;
+            data["img"] = ret.img;
+            data["url"] = ret.url;
+            data["state"] = std::to_string(ret.status);
         }
     }
 
@@ -202,7 +182,6 @@ void GetProjectDetailServlet::doPost(const pico::HttpRequest::Ptr& req,
 }
 
 void UpdateProjectServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResponse::Ptr& res) {
-    auto conn = get_connection();
     std::string body = req->get_body();
     Json::Value json;
     if (!strToJson(body, json)) {
@@ -211,45 +190,34 @@ void UpdateProjectServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpR
         return;
     }
 
-    std::string id = json["id"].asString();
-    std::string state = json["state"].asString();
-    std::string title = json["title"].asString();
-    std::string description = json["content"].asString();
-    std::string img = json["img"].asString();
-    std::string url = json["url"].asString();
-    std::string start_time = format_time(json["start_time"].asString());
-    std::string end_time = format_time(json["end_time"].asString());
+    std::string id = json.get("id", "").asString();
+    int state = std::stoi(json.get("state", "3").asString());
+    std::string title = json.get("title", "").asString();
+    std::string description = json.get("content", "").asString();
+    std::string img = json.get("img", "").asString();
+    std::string url = json.get("url", "").asString();
+    std::time_t start_time = pico::Str2Time(json.get("start_time", "").asString().data());
+    std::time_t end_time = pico::Str2Time(json.get("end_time", "").asString().data());
 
     int code = 0;
     std::string message = "success";
     res->set_status(pico::HttpStatus::OK);
 
+    pico::Mapper<project> mapper;
 
-    if (!CheckParameter(id) || !CheckParameter(state) || !CheckParameter(title) ||
-        !CheckParameter(description) || !CheckParameter(img) || !CheckParameter(url) ||
-        !CheckParameter(start_time) || !CheckParameter(end_time)) {
-        code = 200;
-        message = "invalid parameter";
+    project item(title, description, img, url, start_time, time(0), end_time, state);
+
+    if (!id.empty() || mapper.existsWithPrimaryKey(id)) {
+        item.id = std::stoi(id);
+        auto ret = mapper.updateByPrimaryKey(item);
+        if (!ret) {
+            code = 200;
+            message = "update failed";
+        }
     }
     else {
-        std::string sql = "select * from project where id = " + id;
-        std::shared_ptr<ResultSet> rs = conn->query(sql);
-        if (rs->size() == 0) {
-            code = 200;
-            message = "project not exist";
-        }
-        else {
-            std::string sql = "update project set title = '" + title + "', description = '" +
-                              description + "', img = '" + img + "', url = '" + url +
-                              "', "
-                              "created_at = '" +
-                              start_time + "', end_at = '" + end_time + "', status = " + state +
-                              " where id = " + id;
-            if (!conn->update(sql)) {
-                code = 200;
-                message = "database error";
-            }
-        }
+        code = 200;
+        message = "invalid parameter";
     }
 
     Json::Value json_resp;

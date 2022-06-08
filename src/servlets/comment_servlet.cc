@@ -1,14 +1,14 @@
 #include "comment_servlet.h"
 
+#include "../tables.hpp"
 #include "pico/session.h"
+#include "pico/util.h"
 #include "util.h"
 
 #include <memory>
 
 void ChangeCommentServlet::doPost(const pico::HttpRequest::Ptr& req,
                                   pico::HttpResponse::Ptr& resp) {
-    auto conn = get_connection();
-
     Json::Value body;
     if (!strToJson(req->get_body(), body)) {
         resp->set_status(pico::HttpStatus::BAD_REQUEST);
@@ -21,12 +21,19 @@ void ChangeCommentServlet::doPost(const pico::HttpRequest::Ptr& req,
     Json::Value data = {};
 
 
-    std::string id = body["id"].asString();
-    std::string status = body["state"].asString();
-    std::string sql = "update main_comment set status = " + status + " where id = " + id;
-    if (!conn->update(sql)) {
-        code = 500;
-        message = "update failed";
+    std::string id = body.get("id", "").asString();
+    int status = std::stoi(body.get("status", "0").asString());
+
+    pico::Mapper<main_comment> mapper("sql_1");
+
+    if (id.empty() || !mapper.existsWithPrimaryKey(id)) {
+        code = 200;
+        message = "message not found";
+    }
+    else {
+        auto comment = mapper.selectByPrimaryKey(id);
+        comment.status = status;
+        mapper.updateByPrimaryKey(comment);
     }
 
     Json::Value resp_json;
@@ -39,8 +46,6 @@ void ChangeCommentServlet::doPost(const pico::HttpRequest::Ptr& req,
 
 void ChangeThirdCommentServlet::doPost(const pico::HttpRequest::Ptr& req,
                                        pico::HttpResponse::Ptr& resp) {
-    auto conn = get_connection();
-
     Json::Value body;
     if (!strToJson(req->get_body(), body)) {
         resp->set_status(pico::HttpStatus::BAD_REQUEST);
@@ -52,38 +57,30 @@ void ChangeThirdCommentServlet::doPost(const pico::HttpRequest::Ptr& req,
     std::string message = "success";
     Json::Value data = {};
 
-    std::string main_comment_id = body["id"].asString();
-    std::string reply_comment_id = body["_id"].asString();
+    std::string main_comment_id = body.get("id", "").asString();
+    std::string reply_comment_id = body.get("_id", "").asString();
 
-    if (!CheckParameter(main_comment_id) || !CheckParameter(reply_comment_id)) {
+    pico::Mapper<Article> mapper("sql_1");
+    pico::Mapper<reply_comment> reply_mapper("sql_1");
+
+    if (main_comment_id.empty() || !mapper.existsWithPrimaryKey(reply_comment_id)) {
         code = 200;
-        message = "invalid request";
+        message = "message not found";
     }
     else {
-        std::string sql = "select * from reply_comment where id = " + reply_comment_id +
-                          " and main_comment_id = " + main_comment_id;
-        std::shared_ptr<ResultSet> rs = conn->query(sql);
+        auto reply = reply_mapper.selectByPrimaryKey(reply_comment_id);
 
-        if (rs->size() == 0) {
+        if (reply.main_comment_id != std::stoi(main_comment_id)) {
             code = 200;
             message = "message not found";
         }
         else {
-            std::string article_id = rs->next()->getValue("article_id");
-            std::string del_sql = "delete from reply_comment where id = " + reply_comment_id +
-                                  " and main_comment_id = " + main_comment_id;
-            if (!conn->update(del_sql)) {
-                code = 200;
-                message = "delete message failed";
-            }
-            else {
-                std::string update_sql =
-                    "update article set comments = comments - 1 where id = " + article_id;
-                if (!conn->update(update_sql)) {
-                    code = 200;
-                    message = "update article comments failed";
-                }
-            }
+            int article_id = reply.article_id;
+            reply_mapper.deleteByPrimaryKey(reply_comment_id);
+
+            auto article = mapper.selectByPrimaryKey(article_id);
+            article.comments -= 1;
+            mapper.updateByPrimaryKey(article);
         }
     }
 
@@ -96,8 +93,6 @@ void ChangeThirdCommentServlet::doPost(const pico::HttpRequest::Ptr& req,
 }
 
 void AddCommentServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResponse::Ptr& resp) {
-    auto conn = get_connection();
-
     Json::Value body;
     if (!strToJson(req->get_body(), body)) {
         resp->set_status(pico::HttpStatus::BAD_REQUEST);
@@ -109,42 +104,45 @@ void AddCommentServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResp
     std::string message = "success";
     Json::Value data = {};
 
-    std::string article_id = body["article_id"].asString();
+    std::string article_id = body.get("article_id", "").asString();
     Json::Value comment_data = body["data"];
 
-    std::string comment_content = comment_data["content"].asString();
-    std::string comment_username = comment_data["username"].asString();
-    std::string comment_email = comment_data["email"].asString();
+    std::string comment_content = comment_data.get("content", "").asString();
+    std::string comment_username = comment_data.get("username", "").asString();
+    std::string comment_email = comment_data.get("email", "").asString();
 
-    if (!CheckParameter(article_id) || !CheckParameter(comment_content) ||
-        !CheckParameter(comment_username) || !CheckParameter(comment_email)) {
+    pico::Mapper<Article> mapper("sql_1");
+    pico::Mapper<main_comment> comment_mapper("sql_1");
+    pico::Mapper<User> user_mapper("sql_1");
+
+    if (!is_email_valid(comment_email) || article_id.empty() ||
+        !mapper.existsWithPrimaryKey(article_id)) {
         code = 200;
         message = "invalid request";
     }
     else {
-        std::string user_id = get_user_id(comment_email, comment_username);
-        if (user_id.empty()) {
-            code = 200;
-            message = "user not found";
+        auto article = mapper.selectByPrimaryKey(article_id);
+
+        pico::Base<User> user_base;
+        auto criteria = user_base.createCriteria();
+        criteria->andEqualTo(&User::email, comment_email)
+            ->andEqualTo(&User::name, comment_username)
+            ->andEqualTo(&User::role, 0);
+        auto ret = user_mapper.select(user_base);
+        int user_id = 0;
+        if (ret.size() == 0) {
+            user_id = user_mapper.insert(
+                User(comment_username, comment_email, std::time(nullptr), "", 0));
         }
         else {
-            std::string sql =
-                "insert into main_comment(article_id,user_id,content,status,created_at,updated_at) "
-                "values(" +
-                article_id + "," + user_id + ",'" + comment_content + "',1,now(),now())";
-            if (!conn->update(sql)) {
-                code = 200;
-                message = "add comment failed";
-            }
-            else {
-                std::string update_sql =
-                    "update article set comments = comments + 1 where id = " + article_id;
-                if (!conn->update(update_sql)) {
-                    code = 200;
-                    message = "update article comments failed";
-                }
-            }
+            user_id = ret[0].id;
         }
+
+        comment_mapper.insert(main_comment(
+            article.id, user_id, comment_content, 1, 0, std::time(nullptr), std::time(nullptr)));
+
+        article.comments += 1;
+        mapper.updateByPrimaryKey(article);
     }
 
     Json::Value resp_json;
@@ -157,8 +155,6 @@ void AddCommentServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResp
 
 void AddThirdCommentServlet::doPost(const pico::HttpRequest::Ptr& req,
                                     pico::HttpResponse::Ptr& resp) {
-    auto conn = get_connection();
-
     Json::Value body;
     if (!strToJson(req->get_body(), body)) {
         resp->set_status(pico::HttpStatus::BAD_REQUEST);
@@ -170,49 +166,64 @@ void AddThirdCommentServlet::doPost(const pico::HttpRequest::Ptr& req,
     std::string message = "success";
     Json::Value data = {};
 
-    std::string article_id = body["article_id"].asString();
-    std::string comment_id = body["comment_id"].asString();
-    std::string content = body["content"].asString();
+    std::string article_id = body.get("article_id", "").asString();
+    std::string comment_id = body.get("comment_id", "").asString();
+    std::string content = body.get("content", "").asString();
+
+    pico::Mapper<Article> mapper_article("sql_1");
+    pico::Mapper<User> mapper_user("sql_1");
+    pico::Mapper<main_comment> mapper_comment("sql_1");
+    pico::Mapper<reply_comment> mapper_reply("sql_1");
 
     Json::Value from_user, to_user;
     if (!strToJson(body["from_user"].asString(), from_user) ||
-        !strToJson(body["to_user"].asString(), to_user)) {
+        !strToJson(body["to_user"].asString(), to_user) || article_id.empty() ||
+        comment_id.empty() || !mapper_article.existsWithPrimaryKey(article_id) ||
+        !mapper_comment.existsWithPrimaryKey(comment_id)) {
         code = 200;
         message = "invalid request";
     }
     else {
-        std::string from_user_id =
-            get_user_id(from_user["email"].asString(), from_user["username"].asString());
-        // get to_user id from users table
-        std::string to_user_name = to_user["name"].asString();
-        std::string query_sql =
-            "select id from user where name = '" + to_user_name + "' and role = 0";
-        std::shared_ptr<ResultSet> rs = conn->query(query_sql);
-        Result::Ptr res = nullptr;
-        if ((res = rs->next()) == nullptr) {
+        auto article = mapper_article.selectByPrimaryKey(article_id);
+
+        std::string comment_email = from_user.get("email", "").asString();
+        std::string comment_name = from_user.get("username", "").asString();
+        if (!is_email_valid(comment_email) || comment_name.empty()) {
             code = 200;
-            message = "to_user not found";
+            message = "invalid request";
         }
         else {
-            std::string to_user_id = res->getValue("id");
-            // insert int reply_comment
-            std::string sql = "insert into "
-                              "reply_comment(article_id,main_comment_id,from_user_id,to_user_id,"
-                              "content,created_at) "
-                              "values(" +
-                              article_id + "," + comment_id + "," + from_user_id + "," +
-                              to_user_id + ",'" + content + "',now())";
-            if (!conn->update(sql)) {
-                code = 200;
-                message = "add third comment failed";
+            pico::Base<User> user_base;
+            auto criteria = user_base.createCriteria();
+            criteria->andEqualTo(&User::email, comment_email)
+                ->andEqualTo(&User::name, comment_name)
+                ->andEqualTo(&User::role, 0);
+            auto ret = mapper_user.select(user_base);
+            int from_user_id = 0;
+            if (ret.size() == 0) {
+                from_user_id = mapper_user.insert(
+                    User(comment_name, comment_email, std::time(nullptr), "", 0));
             }
             else {
-                std::string update_sql =
-                    "update article set comments = comments + 1 where id = " + article_id;
-                if (!conn->update(update_sql)) {
-                    code = 200;
-                    message = "update article comments failed";
-                }
+                from_user_id = ret[0].id;
+            }
+
+            std::string to_user_id = to_user.get("user_id", "").asString();
+            if (to_user_id.empty() || !mapper_user.existsWithPrimaryKey(to_user_id)) {
+                code = 200;
+                message = "invalid request";
+            }
+            else {
+                mapper_reply.insert(reply_comment(article.id,
+                                                  std::stoi(comment_id),
+                                                  from_user_id,
+                                                  std::stoi(to_user_id),
+                                                  content,
+                                                  std::time(nullptr)));
+
+                article.comments += 1;
+
+                mapper_article.updateByPrimaryKey(article);
             }
         }
     }

@@ -7,5 +7,5 @@ Makefile
 .vscode/
 build/
 lib/
-mysql.ini
 oss.ini
+compile_commands.json

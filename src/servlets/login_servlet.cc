@@ -3,9 +3,9 @@
 
 #include "pico/session.h"
 
-void LoginServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResponse::Ptr& res) {
-    auto conn = get_connection();
+#include "../tables.hpp"
 
+void LoginServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResponse::Ptr& res) {
     std::string body = req->get_body();
     Json::Value json;
     if (!strToJson(body, json)) {
@@ -14,14 +14,8 @@ void LoginServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResponse:
         return;
     }
 
-    std::string username = json["email"].asString();
-    std::string password = json["password"].asString();
-
-    if (!CheckParameter(username) || !CheckParameter(password)) {
-        res->set_status(pico::HttpStatus::BAD_REQUEST);
-        res->set_body("invalid username or password");
-        return;
-    }
+    std::string username = json.get("email", "").asString();
+    std::string password = json.get("password", "").asString();
 
     Json::Value json_resp;
 
@@ -36,21 +30,24 @@ void LoginServlet::doPost(const pico::HttpRequest::Ptr& req, pico::HttpResponse:
     std::string msg = "success";
     res->set_status(pico::HttpStatus::OK);
 
-    std::string sql = "select * from user where name = '" + username + "' and email = '" +
-                      password + "' and role = 1";
-    auto result = conn->query(sql);
-    if (!result) {
+    pico::Mapper<User> u_mapper;
+    u_mapper.use("sql_1");
+
+    pico::Base<User> base;
+    auto criteria = base.createCriteria();
+    criteria->andEqualTo(&User::name, username)
+        ->andEqualTo(&User::email, password)
+        ->andEqualTo(&User::role, 1);
+
+    auto ret = u_mapper.select(base);
+    if (ret.size() != 1) {
         code = 200;
-        msg = "database error";
-    }
-    else if (result->size() == 0) {
-        code = 200;
-        msg = "user not exist";
+        msg = "invalid username or password";
     }
     else {
-        std::string user_id = result->next()->getString("id");
-        session->set("user_id", user_id);
-        session->set("username", username);
+        User user = ret.front();
+        session->set("user_id", user.id);
+        session->set("username", user.name);
     }
 
     json_resp["code"] = code;

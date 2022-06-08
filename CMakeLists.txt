@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 project(blog)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(pico/cmake/utils.cmake)
 include(cmake/FindMySQL.cmake)
 
@@ -18,24 +19,25 @@ set(CMAKE_C_FLAGS
 
 option(TESTS_BUILD "enable tests/ build" OFF)
 
-link_directories(/usr/lib/mysql)
+
 
 include_directories("${PROJECT_BINARY_DIR}")
 
-include_directories(/usr/include/mysql)
+
+find_package(MySQL REQUIRED)
+if(MYSQL_FOUND)
+  include_directories(${MYSQL_INCLUDE_DIR})
+  link_directories(${MYSQL_LIBRARY_DIR})
+endif()
 
 find_package(yaml-cpp REQUIRED)
-include_directories("${YAML_CPP_INCLUDE_DIR}")
-
-
+include_directories(${YAML_INCLUDE_DIR})
+link_directories(${YAML_LIBRARY_DIR})
 
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(
-    mysqlclient
-    mysqlclient_dev
-    mysqlclient_libs
-    mysqlclient_libs_dev
-)
+pkg_check_modules(JSONCPP jsoncpp)
+include_directories(${JSONCPP_INCLUDE_DIR})
+
 
 set(servlets
     src/servlets/article_servlet.cc
@@ -53,13 +55,11 @@ set(filters
     src/filters/session_filter.cc
 )
 
-set(
-    LIB_SRC
-    src/ConnectionPool/CommonConnectionPool.cpp
-    src/ConnectionPool/Connection.cpp
-    src/ConnectionPool/ResultSet.cpp
+set(LIB_SRC
 
     src/oss/oss_client.cc
+
+    src/tables.hpp
 
     src/util.cc
     ${servlets}
@@ -77,16 +77,15 @@ add_subdirectory(pico)
 set(EXTRA_LIBS ${EXTRA_LIBS} pico blog)
 
 set(LIBS 
-    ${LIBS} 
-    pico 
-    blog 
-    mysqlclient 
-    mbedtls 
-    pthread 
-    mbedcrypto 
-    jsoncpp
-    boost_program_options
-    yaml-cpp
+    ${LIBS}
+    pico
+    blog
+    ${JSONCPP_LIBRARIES}
+    ${YAML_CPP_LIBRARIES}
+    ${MYSQL_LIBRARIES}
+    pthread
+    mbedcrypto
+    mbedtls
     )
 
 if(TESTS_BUILD)
@@ -95,11 +94,6 @@ add_executable(test_submodule tests/test_submodule.cc)
 add_dependencies(test_submodule ${EXTRA_LIBS})
 force_redefine_file_macro_for_sources(test_submodule)
 target_link_libraries(test_submodule ${LIBS})
-
-add_executable(test_cp tests/test_cp.cc)
-add_dependencies(test_cp ${EXTRA_LIBS})
-force_redefine_file_macro_for_sources(test_cp)
-target_link_libraries(test_cp ${LIBS})
 
 add_executable(test_oss tests/test_oss.cc)
 add_dependencies(test_oss ${EXTRA_LIBS})
@@ -125,6 +119,11 @@ add_executable(test_log tests/test_log.cc)
 add_dependencies(test_log ${EXTRA_LIBS})
 force_redefine_file_macro_for_sources(test_log)
 target_link_libraries(test_log ${LIBS})
+
+add_executable(test_mapper tests/test_mapper.cc)
+add_dependencies(test_mapper ${EXTRA_LIBS})
+force_redefine_file_macro_for_sources(test_mapper)
+target_link_libraries(test_mapper ${LIBS})
 
 endif()
 
