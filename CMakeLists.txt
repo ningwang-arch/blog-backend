@@ -30,6 +30,12 @@ if(MYSQL_FOUND)
   link_directories(${MYSQL_LIBRARY_DIR})
 endif()
 
+find_package(OpenSSL REQUIRED)
+if(OpenSSL_FOUND)
+  include_directories(${OpenSSL_INCLUDE_DIR})
+  link_directories(${OpenSSL_LIBRARY_DIR})
+endif()
+
 find_package(yaml-cpp REQUIRED)
 include_directories(${YAML_INCLUDE_DIR})
 link_directories(${YAML_LIBRARY_DIR})
@@ -80,6 +86,7 @@ set(LIBS
     ${LIBS}
     pico
     blog
+    ${OPENSSL_LIBRARIES}
     ${JSONCPP_LIBRARIES}
     ${YAML_CPP_LIBRARIES}
     ${MYSQL_LIBRARIES}
@@ -127,7 +134,7 @@ target_link_libraries(test_mapper ${LIBS})
 
 endif()
 
-add_executable(app pico/pico/main.cc)
+add_executable(app pico/pico/main.cc ${LIB_SRC})
 add_dependencies(app ${EXTRA_LIBS})
 force_redefine_file_macro_for_sources(app)
 target_link_libraries(app ${LIBS})
