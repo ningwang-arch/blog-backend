@@ -39,8 +39,15 @@ void test_article() {
 
     auto ret = a_mapper.selectAll();
     for (auto& result : ret) {
+        std::cout << "Article: " << result.id << std::endl;
         auto comments = result.main_comments;
-        for (auto comment : comments) { std::cout << comment.article_id << std::endl; }
+        for (auto comment : comments) {
+            std::cout << "\tmain_comment: " << comment.id << std::endl;
+
+            auto replys = comment.reply_comments;
+
+            for (auto xxx : replys) { std::cout << "\t\treply_comment: " << xxx.id << std::endl; }
+        }
     }
 }
 
@@ -55,7 +62,7 @@ int main(int argc, char* argv[]) {
     pico::EnvManager::getInstance()->init(argc, argv);
     pico::Config::LoadFromConfDir(pico::EnvManager::getInstance()->getConfigPath());
     // test();
-    // test_article();
-    test_xxx();
+    test_article();
+    // test_xxx();
     return 0;
 }

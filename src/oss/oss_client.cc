@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 
+#include "pico/http/request.h"
 #include "pico/pico.h"
 #include "src/util.h"
 
@@ -98,7 +99,7 @@ bool OSSClient::upload_data(const std::string& fileName, const std::string& data
         get_auth_header("PUT", m_accessId, m_accessKey, "/" + m_bucketName + "/" + fileName);
 
     pico::HttpResponse::Ptr resp =
-        pico::HttpConnection::doRequest(pico::HttpMethod::PUT, url, headers, data);
+        pico::Request::doRequest(pico::HttpMethod::PUT, url, headers, data);
 
     if (!resp || (int)resp->get_status() != 200) {
         LOG_ERROR("upload file %s failed", fileName.c_str());
@@ -133,7 +134,7 @@ bool OSSClient::download_data(const std::string& fileName, std::string& data) {
     headers["Authorization"] =
         get_auth_header("GET", m_accessId, m_accessKey, "/" + m_bucketName + "/" + fileName);
 
-    pico::HttpResponse::Ptr resp = pico::HttpConnection::doGet(url, headers);
+    pico::HttpResponse::Ptr resp = pico::Request::doGet(url, headers);
 
     if (!resp || (int)resp->get_status() != 200) {
         LOG_ERROR("download file %s failed", fileName.c_str());
@@ -153,8 +154,7 @@ bool OSSClient::delete_file(const std::string& fileName) {
     headers["Authorization"] =
         get_auth_header("DELETE", m_accessId, m_accessKey, "/" + m_bucketName + "/" + fileName);
 
-    pico::HttpResponse::Ptr resp =
-        pico::HttpConnection::doRequest(pico::HttpMethod::DELETE, url, headers);
+    pico::HttpResponse::Ptr resp = pico::Request::doRequest(pico::HttpMethod::DELETE, url, headers);
 
     if (!resp || (int)resp->get_status() != 204) {
         LOG_ERROR("delete file %s failed", fileName.c_str());
@@ -172,8 +172,7 @@ bool OSSClient::list_files(const std::string& prefix, std::vector<std::string>& 
     headers["Authorization"] =
         get_auth_header("GET", m_accessId, m_accessKey, "/" + m_bucketName + "/");
 
-    pico::HttpResponse::Ptr resp =
-        pico::HttpConnection::doRequest(pico::HttpMethod::GET, url, headers);
+    pico::HttpResponse::Ptr resp = pico::Request::doRequest(pico::HttpMethod::GET, url, headers);
 
     if (!resp || (int)resp->get_status() != 200) {
         LOG_ERROR("list files failed");
@@ -208,8 +207,7 @@ bool OSSClient::getFileSize(const std::string& fileName, uint64_t& size) {
     headers["Authorization"] =
         get_auth_header("HEAD", m_accessId, m_accessKey, "/" + m_bucketName + "/" + fileName);
 
-    pico::HttpResponse::Ptr resp =
-        pico::HttpConnection::doRequest(pico::HttpMethod::HEAD, url, headers);
+    pico::HttpResponse::Ptr resp = pico::Request::doRequest(pico::HttpMethod::HEAD, url, headers);
 
     if (!resp || (int)resp->get_status() != 200) {
         LOG_ERROR("get file size failed");

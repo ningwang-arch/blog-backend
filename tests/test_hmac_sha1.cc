@@ -1,3 +1,4 @@
+#include "pico/http/request.h"
 #include "pico/pico.h"
 #include "src/util.h"
 
@@ -35,7 +36,7 @@ void test() {
     headers["Host"] = "pico-img.oss-cn-beijing.aliyuncs.com";
 
     pico::HttpResponse::Ptr resp =
-        pico::HttpConnection::doGet("http://pico-img.oss-cn-beijing.aliyuncs.com/.vimrc", headers);
+        pico::Request::doGet("http://pico-img.oss-cn-beijing.aliyuncs.com/.vimrc", headers);
 
     std::cout << "status: " << (int)resp->get_status() << std::endl;
     std::cout << "body: " << resp->get_body() << std::endl;

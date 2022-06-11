@@ -150,6 +150,7 @@ struct main_comment
     std::time_t created_at;
     std::time_t updated_at;
 
+    std::vector<reply_comment> reply_comments;
 
     main_comment() = default;
     main_comment(int id, int article_id, int user_id, const std::string& content, int status,
@@ -262,7 +263,9 @@ ResultMap(EntityMap(tag_category, "tag_category"), PropertyMap(id, pico::ColumnT
 
 ResultMap(EntityMap(main_comment, "main_comment"), PropertyMap(id, pico::ColumnType::Id),
           PropertyMap(article_id), PropertyMap(user_id), PropertyMap(content), PropertyMap(status),
-          PropertyMap(is_handle), PropertyMap(created_at), PropertyMap(updated_at));
+          PropertyMap(is_handle), PropertyMap(created_at), PropertyMap(updated_at),
+          PropertyMap(reply_comments, "id", pico::JoinType::OneToMany,
+                      &reply_comment::main_comment_id));
 
 
 ResultMap(EntityMap(reply_comment, "reply_comment"), PropertyMap(id, pico::ColumnType::Id),
